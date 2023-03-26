@@ -26,7 +26,7 @@ public class FreeBoardCommentService {
 
     // 댓글 작성
     @Transactional
-    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO, Long uuid)
+    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO)
     {
         FreeBoardComment freeBoardComment = new FreeBoardComment();
         freeBoardComment.setContent(freeBoardCommentDTO.getContent());
@@ -36,7 +36,7 @@ public class FreeBoardCommentService {
             return new IllegalArgumentException("게시판을 찾을 수 없습니다.");
         });
 
-        freeBoardComment.setUuid(uuid);
+        freeBoardComment.setUuid(freeBoardCommentDTO.getUuid());
         freeBoardComment.setFreeBoard(freeBoard);
         freeBoardCommentRepository.save(freeBoardComment);
 

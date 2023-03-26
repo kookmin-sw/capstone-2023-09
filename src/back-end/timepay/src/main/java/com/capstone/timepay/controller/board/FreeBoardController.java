@@ -98,7 +98,6 @@ public class FreeBoardController {
 
         freeBoardService.delete(id, freeBoardDTO);
         deleteMap.put("success", true);
-        deleteMap.put("freeBoard", freeBoard);
         return deleteMap;
     }
 

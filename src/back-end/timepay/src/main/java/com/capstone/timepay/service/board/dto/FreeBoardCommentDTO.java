@@ -16,7 +16,7 @@ public class FreeBoardCommentDTO {
 
     private Long freeBoardCommentId;
     private String content;
-    private Long uid;    // 일단 uuid로 쏨
+    private Long uuid;    // 일단 uuid로 쏨
     private LocalDateTime createdAt;
 
     public static FreeBoardCommentDTO toFreeBoardCommentDTO(FreeBoardComment freeBoardComment)
@@ -24,7 +24,7 @@ public class FreeBoardCommentDTO {
         return new FreeBoardCommentDTO(
                 freeBoardComment.getF_commentId(),
                 freeBoardComment.getContent(),
-                freeBoardComment.getUid(),
+                freeBoardComment.getUuid(),
                 freeBoardComment.getCreatedAt()
         );
     }

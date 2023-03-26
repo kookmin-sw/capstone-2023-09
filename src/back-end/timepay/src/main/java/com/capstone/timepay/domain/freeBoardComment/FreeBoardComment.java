@@ -24,7 +24,7 @@ public class FreeBoardComment extends BaseTimeEntity {
 
     @Column // (nullable = false)
     private String content;
-    private Long uid;
+    private Long uuid;
 
     @OneToMany(mappedBy = "freeBoardComment", orphanRemoval = true)
     private List<FreeCommentReport> freeCommentReports = new ArrayList<>();

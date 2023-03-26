@@ -2,6 +2,8 @@ package com.capstone.timepay.service.board.service;
 
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
+import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
+import com.capstone.timepay.domain.freeBoardComment.FreeBoardCommentRepository;
 import com.capstone.timepay.domain.user.User;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class FreeBoardService
 {
     private final FreeBoardRepository freeBoardRepository;
+    private final FreeBoardCommentRepository freeBoardCommentRepository;
 
     public FreeBoard getId(Long id)
     {
@@ -85,7 +89,7 @@ public class FreeBoardService
 
     // 게시글 삭제
     @Transactional
-    public void delete(Long id)
+    public void delete(Long id, FreeBoardDTO freeBoardDTO)
     {
         FreeBoard freeBoard = freeBoardRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다!");

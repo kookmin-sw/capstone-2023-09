@@ -9,10 +9,14 @@ import com.capstone.timepay.service.board.dto.FreeBoardCommentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -22,7 +26,7 @@ public class FreeBoardCommentService {
 
     // 댓글 작성
     @Transactional
-    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO, Long uid)
+    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO, Long uuid)
     {
         FreeBoardComment freeBoardComment = new FreeBoardComment();
         freeBoardComment.setContent(freeBoardCommentDTO.getContent());
@@ -32,7 +36,7 @@ public class FreeBoardCommentService {
             return new IllegalArgumentException("게시판을 찾을 수 없습니다.");
         });
 
-        freeBoardComment.setUid(uid);
+        freeBoardComment.setUuid(uuid);
         freeBoardComment.setFreeBoard(freeBoard);
         freeBoardCommentRepository.save(freeBoardComment);
 
@@ -50,14 +54,17 @@ public class FreeBoardCommentService {
         return commentDTOS;
     }
 
-    // 댓글 삭제
-    @Transactional
-    public String deleteComment(Long commentId)
+    @Transactional(readOnly = true)
+    public FreeBoardComment getCommentId(Long id)
     {
+        return freeBoardCommentRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public void delete(Long commentId) {
         FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId).orElseThrow(() -> {
-            return new IllegalArgumentException("댓글을 찾을 수 없습니다");
+            return new IllegalArgumentException("Comment Id를 찾을 수 없습니다");
         });
         freeBoardCommentRepository.deleteById(commentId);
-        return "삭제 완료";
     }
 }

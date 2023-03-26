@@ -74,7 +74,6 @@ public class FreeBoardController {
         updateMap.put("success", true);
         updateMap.put("freeBoard", freeBoard);
         return updateMap;
-//        return new ResponseEntity(freeBoardService.update(id, freeBoardDTO), HttpStatus.OK);
     }
 
     @ApiOperation(value = "자유게시글 삭제")
@@ -97,7 +96,7 @@ public class FreeBoardController {
             return deleteMap;
         }
 
-        freeBoardService.update(id, freeBoardDTO);
+        freeBoardService.delete(id, freeBoardDTO);
         deleteMap.put("success", true);
         deleteMap.put("freeBoard", freeBoard);
         return deleteMap;

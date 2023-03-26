@@ -1,15 +1,18 @@
 package com.capstone.timepay.controller.board;
 
+import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
 import com.capstone.timepay.service.board.service.FreeBoardService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,14 +23,16 @@ public class FreeBoardController {
 
     @GetMapping("")
     @ApiOperation(value = "전체 자유게시판 조회")
-    public ResponseEntity<List<FreeBoardDTO>> getBoards()
+    public ResponseEntity<Page<FreeBoardDTO>> getBoards(
+            @RequestParam(value = "pagingIndex", defaultValue = "0") int pagingIndex,
+            @RequestParam(value = "pagingSize", defaultValue = "50") int pagingSize)
     {
-        List<FreeBoardDTO> freeBoardDTOList = freeBoardService.getBoards();
-        if (freeBoardDTOList.isEmpty())
+        Page<FreeBoardDTO> paging = freeBoardService.getBoards(pagingIndex, pagingSize);
+        if (paging.isEmpty())
         {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(freeBoardDTOList, HttpStatus.OK);
+        return new ResponseEntity<>(paging, HttpStatus.OK);
     }
 
     @ApiOperation(value = "개별 자유게시판 조회")
@@ -36,23 +41,6 @@ public class FreeBoardController {
     {
         return new ResponseEntity<>(freeBoardService.getBoard(id), HttpStatus.OK);
     }
-
-//    // 숨김처리 안된 게시물 조회
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/good")
-//    public Response<?> getGoodBoards()
-//    {
-//        return new Response("SUCCESS", "숨김처리 안된 게시판 조회", freeBoardService.getGoodBoard());
-//    }
-//
-//
-//    // 숨김처리된 게시물 조회
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/bad")
-//    public Response<?> getBadBoards()
-//    {
-//        return new Response("SUCCESS", "숨김처리 게시판 조회", freeBoardService.getBadBoard());
-//    }
 
 
     @ApiOperation(value = "자유게시글 작성")
@@ -64,17 +52,55 @@ public class FreeBoardController {
 
     @ApiOperation(value = "자유게시글 수정")
     @PutMapping("/update/{id}")
-    public ResponseEntity update(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
+    public Map<String, Object> update(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
     {
-        return new ResponseEntity(freeBoardService.update(id, freeBoardDTO), HttpStatus.OK);
+        Map<String, Object> updateMap = new HashMap<>();
+        FreeBoard freeBoard = freeBoardService.getId(id);
+        if (freeBoard == null)
+        {
+            updateMap.put("success", false);
+            updateMap.put("message", "해당 게시글을 찾을 수 없습니다.");
+            return updateMap;
+        }
+
+        if (!freeBoard.getUuid().equals(freeBoardDTO.getUuid()))
+        {
+            updateMap.put("success", false);
+            updateMap.put("message", "수정 권한이 없습니다");
+            return updateMap;
+        }
+
+        freeBoardService.update(id, freeBoardDTO);
+        updateMap.put("success", true);
+        updateMap.put("freeBoard", freeBoard);
+        return updateMap;
+//        return new ResponseEntity(freeBoardService.update(id, freeBoardDTO), HttpStatus.OK);
     }
 
     @ApiOperation(value = "자유게시글 삭제")
     @DeleteMapping ("/delete/{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id)
+    public Map<String, Object> delete(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
     {
-        freeBoardService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        Map<String, Object> deleteMap = new HashMap<>();
+        FreeBoard freeBoard = freeBoardService.getId(id);
+        if (freeBoard == null)
+        {
+            deleteMap.put("success", false);
+            deleteMap.put("message", "해당 게시글을 찾을 수 없습니다.");
+            return deleteMap;
+        }
+
+        if (!freeBoard.getUuid().equals(freeBoardDTO.getUuid()))
+        {
+            deleteMap.put("success", false);
+            deleteMap.put("message", "수정 권한이 없습니다");
+            return deleteMap;
+        }
+
+        freeBoardService.update(id, freeBoardDTO);
+        deleteMap.put("success", true);
+        deleteMap.put("freeBoard", freeBoard);
+        return deleteMap;
     }
 
 }

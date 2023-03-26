@@ -21,6 +21,8 @@ public class FreeBoardDTO
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isHidden;
+    // 나중에 어떻게 될지 모르겠지만 일단 uuid로 판단
+    private Long uuid;
 
     public static FreeBoardDTO toFreeBoardDTO(FreeBoard freeBoard)
     {
@@ -31,8 +33,9 @@ public class FreeBoardDTO
                 freeBoard.getCategory(),
                 freeBoard.getCreatedAt(),
                 freeBoard.getUpdatedAt(),
-                freeBoard.isHidden()
-                // TODO : 나중에 유저도 넣어줘야함
+                freeBoard.isHidden(),
+                // TODO : 일단 uuid로 판단
+                freeBoard.getUuid()
         );
     }
 }

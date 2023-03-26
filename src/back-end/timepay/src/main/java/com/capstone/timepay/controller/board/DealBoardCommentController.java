@@ -1,11 +1,11 @@
 package com.capstone.timepay.controller.board;
 
-import com.capstone.timepay.controller.board.annotation.Response;
 import com.capstone.timepay.service.board.dto.DealBoardCommentDTO;
 import com.capstone.timepay.service.board.service.DealBoardCommentService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,29 +16,26 @@ public class DealBoardCommentController {
     private final DealBoardCommentService dealBoardCommentService;
 
     @ApiOperation(value = "거래게시글 댓글 삭제")
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/comments/{boardId}")
-    public Response writeComment(@PathVariable("boardId") Long boardId, @RequestBody DealBoardCommentDTO dealBoardCommentDTO)
+    public ResponseEntity writeDealBoardComment(@PathVariable("boardId") Long boardId, @RequestBody DealBoardCommentDTO dealBoardCommentDTO)
     {
-        return new Response("SUCCESS", "댓글 작성", dealBoardCommentService.writeComment(boardId, dealBoardCommentDTO, dealBoardCommentDTO.getUid()));
+        return new ResponseEntity(dealBoardCommentService.writeComment(boardId, dealBoardCommentDTO, dealBoardCommentDTO.getUid()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "거래게시글 게시판의 모든 댓글 불러오기")
     // 게시글에 달린 댓글 모두 불러오기
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/comments/{boardId}")
-    public Response getComments(@PathVariable("boardId") Long boardId) {
-        return new Response("성공", "댓글 불러오기.", dealBoardCommentService.getComments(boardId));
+    public ResponseEntity getDealBoardComments(@PathVariable("boardId") Long boardId) {
+        return new ResponseEntity(dealBoardCommentService.getComments(boardId), HttpStatus.OK);
     }
 
     // 댓글 삭제
     @ApiOperation(value = "거래게시글 댓글 삭제")
-    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/comments/{boardId}/{commentId}")
-    public Response deleteComment(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId) {
+    public ResponseEntity deleteDealBoardComment(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId) {
         // TODO: 추후 JWT 로그인 기능을 추가하고나서, 세션에 로그인된 유저와 댓글 작성자를 비교해서, 맞으면 삭제 진행하고
         // 틀리다면 예외처리를 해주면 된다.
-
-        return new Response("성공", "댓글 삭제", dealBoardCommentService.deleteComment(commentId));
+        dealBoardCommentService.deleteComment(commentId);
+        return new ResponseEntity( HttpStatus.OK);
     }
 }

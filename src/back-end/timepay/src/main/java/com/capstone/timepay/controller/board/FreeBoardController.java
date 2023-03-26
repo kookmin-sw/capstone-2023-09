@@ -1,7 +1,5 @@
 package com.capstone.timepay.controller.board;
 
-import com.capstone.timepay.controller.board.annotation.Response;
-import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
 import com.capstone.timepay.service.board.service.FreeBoardService;
 import io.swagger.annotations.ApiOperation;
@@ -58,7 +56,6 @@ public class FreeBoardController {
 
 
     @ApiOperation(value = "자유게시글 작성")
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/write")
     public ResponseEntity write(@RequestBody FreeBoardDTO freeBoardDTO)
     {

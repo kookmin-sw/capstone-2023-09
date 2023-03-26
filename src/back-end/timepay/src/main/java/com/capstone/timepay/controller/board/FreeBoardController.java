@@ -20,7 +20,6 @@ public class FreeBoardController {
 
     private final FreeBoardService freeBoardService;
 
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
     @ApiOperation(value = "전체 자유게시판 조회")
     public ResponseEntity<List<FreeBoardDTO>> getBoards()
@@ -34,11 +33,10 @@ public class FreeBoardController {
     }
 
     @ApiOperation(value = "개별 자유게시판 조회")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public Response<?> getBoard(@PathVariable("id") Long id)
+    public ResponseEntity<FreeBoardDTO> getBoard(@PathVariable("id") Long id)
     {
-        return new Response("SUCCESS", "개별 게시판 조회", freeBoardService.getBoard(id));
+        return new ResponseEntity<>(freeBoardService.getBoard(id), HttpStatus.OK);
     }
 
 //    // 숨김처리 안된 게시물 조회
@@ -62,26 +60,24 @@ public class FreeBoardController {
     @ApiOperation(value = "자유게시글 작성")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/write")
-    public Response<?> write(@RequestBody FreeBoardDTO freeBoardDTO)
+    public ResponseEntity write(@RequestBody FreeBoardDTO freeBoardDTO)
     {
-        return new Response("SUCCESS", "게시글 작성", freeBoardService.write(freeBoardDTO));
+        return new ResponseEntity(freeBoardService.write(freeBoardDTO), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "자유게시글 수정")
-    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/update/{id}")
-    public Response<?> update(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
+    public ResponseEntity update(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
     {
-        return new Response("SUCCESS", "게시글 수정", freeBoardService.update(id, freeBoardDTO));
+        return new ResponseEntity(freeBoardService.update(id, freeBoardDTO), HttpStatus.OK);
     }
 
     @ApiOperation(value = "자유게시글 삭제")
-    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping ("/delete/{id}")
-    public Response<?> delete(@PathVariable("id") Long id)
+    public ResponseEntity delete(@PathVariable("id") Long id)
     {
         freeBoardService.delete(id);
-        return new Response("SUCCESS", "게시글 삭제", null);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

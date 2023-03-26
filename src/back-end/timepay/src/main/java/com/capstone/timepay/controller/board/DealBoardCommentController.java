@@ -3,6 +3,7 @@ package com.capstone.timepay.controller.board;
 import com.capstone.timepay.controller.board.annotation.Response;
 import com.capstone.timepay.service.board.dto.DealBoardCommentDTO;
 import com.capstone.timepay.service.board.service.DealBoardCommentService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ public class DealBoardCommentController {
 
     private final DealBoardCommentService dealBoardCommentService;
 
+    @ApiOperation(value = "거래게시글 댓글 삭제")
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/comments/{boardId}")
     public Response writeComment(@PathVariable("boardId") Long boardId, @RequestBody DealBoardCommentDTO dealBoardCommentDTO)
@@ -21,6 +23,7 @@ public class DealBoardCommentController {
         return new Response("SUCCESS", "댓글 작성", dealBoardCommentService.writeComment(boardId, dealBoardCommentDTO, dealBoardCommentDTO.getUid()));
     }
 
+    @ApiOperation(value = "거래게시글 게시판의 모든 댓글 불러오기")
     // 게시글에 달린 댓글 모두 불러오기
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/comments/{boardId}")
@@ -29,6 +32,7 @@ public class DealBoardCommentController {
     }
 
     // 댓글 삭제
+    @ApiOperation(value = "거래게시글 댓글 삭제")
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/comments/{boardId}/{commentId}")
     public Response deleteComment(@PathVariable("boardId") Long boardId, @PathVariable("commentId") Long commentId) {

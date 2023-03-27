@@ -38,6 +38,7 @@ public class DealBoard extends BaseTimeEntity {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int pay;
+    private Long uuid;
 
     // 숨김처리
     @Column

@@ -15,6 +15,7 @@ public class DealBoardCommentDTO {
     private boolean isApplied;
     private boolean isAdopted;
     private boolean isHidden;
+    private Long uuid;
 
     public static DealBoardCommentDTO toDealBoardCommentDTO(DealBoardComment dealBoardComment)
     {
@@ -24,7 +25,8 @@ public class DealBoardCommentDTO {
                 dealBoardComment.getUid(),
                 dealBoardComment.isApplied(),
                 dealBoardComment.isAdopted(),
-                dealBoardComment.isHidden()
+                dealBoardComment.isHidden(),
+                dealBoardComment.getUid()
         );
     }
 }

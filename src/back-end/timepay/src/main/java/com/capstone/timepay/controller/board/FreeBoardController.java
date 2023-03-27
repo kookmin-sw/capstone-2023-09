@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -96,9 +95,10 @@ public class FreeBoardController {
             return deleteMap;
         }
 
-        freeBoardService.delete(id, freeBoardDTO);
+        freeBoardService.delete(id);
         deleteMap.put("success", true);
         return deleteMap;
     }
 
 }
+링

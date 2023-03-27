@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class FreeBoardService
 {
     private final FreeBoardRepository freeBoardRepository;
-    private final FreeBoardCommentRepository freeBoardCommentRepository;
 
     public FreeBoard getId(Long id)
     {
@@ -89,7 +88,7 @@ public class FreeBoardService
 
     // 게시글 삭제
     @Transactional
-    public void delete(Long id, FreeBoardDTO freeBoardDTO)
+    public void delete(Long id)
     {
         FreeBoard freeBoard = freeBoardRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다!");

@@ -29,7 +29,7 @@ public class DealBoardComment extends BaseTimeEntity {
     private boolean isAdopted;
     // 비공개여부
     private boolean isHidden;
-    private Long uid;
+    private Long uuid;
 
     @OneToMany(mappedBy = "dealBoardComment", orphanRemoval = true)
     private List<DealCommentReport> dealCommentReports = new ArrayList<>();

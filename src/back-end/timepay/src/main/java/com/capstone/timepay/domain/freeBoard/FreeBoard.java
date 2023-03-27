@@ -21,10 +21,11 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class FreeBoard extends BaseTimeEntity
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long f_boardId;
 
     @Column(nullable = false, length = 100)

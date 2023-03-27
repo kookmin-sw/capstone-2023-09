@@ -19,7 +19,7 @@ import java.util.List;
 public class FreeBoardComment extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long f_commentId;
 
     @Column // (nullable = false)

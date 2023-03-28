@@ -13,6 +13,7 @@ import React from 'react';
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import type { ColumnsType } from 'antd/es/table';
+import { VerticalAlignBottomOutlined } from '@ant-design/icons';
 
 /*수직 수평 중앙 정렬*/
 const topWrapperCSS = css`
@@ -76,6 +77,7 @@ const UserManagementPage = () => {
     setModalDetail(false);
   };
 
+  /*회원 활동 목록 탭 설정 */
   const tabList = [
     {
       key: '게시글',
@@ -95,17 +97,241 @@ const UserManagementPage = () => {
     },
   ];
 
+  /*회원 활동 목록 게시글 탭 Table Data 설정 */
+  interface DataTypeUserPost {
+    key: React.Key;
+    postNum: number;
+    postTitle: string;
+    writeDate: string;
+    type: string;
+    curState: string;
+    setActivityTime: string;
+    realActivityTime: string;
+  }
+
+  const columnsUserPost: ColumnsType<DataTypeUserPost> = [
+    {
+      title: '게시글 번호',
+      dataIndex: 'postNum',
+      align: 'center',
+    },
+    {
+      title: '제목',
+      dataIndex: 'postTitle',
+      align: 'center',
+    },
+    {
+      title: '작성 날짜',
+      dataIndex: 'writeDate',
+      align: 'center',
+    },
+    {
+      title: '유형',
+      dataIndex: 'type',
+      align: 'center',
+    },
+    {
+      title: '현재 상태',
+      dataIndex: 'curState',
+      align: 'center',
+    },
+    {
+      title: '설정 활동 시간',
+      dataIndex: 'setActivityTime',
+      align: 'center',
+    },
+    {
+      title: '실제 활동 시간',
+      dataIndex: 'realActivityTime',
+      align: 'center',
+    },
+  ];
+
+  const dataUserPost: DataTypeUserPost[] = [];
+  for (let i = 1; i < 12; i++) {
+    dataUserPost.push({
+      key: i,
+      postNum: i,
+      postTitle: `제목 ${i}`,
+      writeDate: `2023-01-0${i}`,
+      type: `도움 주기`,
+      curState: `활동 완료`,
+      setActivityTime: `0${i}:0${i * 3}~0${i + 2}:0${i}`,
+      realActivityTime: `0${i}:0${i * 4}~0${i + 3}:0${i}`,
+    });
+  }
+
+  /*회원 활동 목록 댓글 탭 Table Data 설정 */
+  interface DataTypeUserComment {
+    key: React.Key;
+    commentNum: number;
+    writeDate: string;
+    apply: string;
+    decide: string;
+    content: string;
+  }
+
+  const columnsUserComment: ColumnsType<DataTypeUserComment> = [
+    {
+      title: '댓글 번호',
+      dataIndex: 'commentNum',
+      align: 'center',
+    },
+    {
+      title: '작성 날짜',
+      dataIndex: 'writeDate',
+      align: 'center',
+    },
+
+    {
+      title: '지원 여부',
+      dataIndex: 'apply',
+      align: 'center',
+    },
+
+    {
+      title: '확정 여부',
+      dataIndex: 'decide',
+      align: 'center',
+    },
+
+    {
+      title: '내용',
+      dataIndex: 'content',
+      align: 'center',
+    },
+  ];
+
+  const dataUserComment: DataTypeUserComment[] = [];
+  for (let i = 1; i < 11; i++) {
+    dataUserComment.push({
+      key: i,
+      commentNum: i,
+      writeDate: `2023-03-0${i}`,
+      apply: `O`,
+      decide: `X`,
+      content: `어떤 언어로 수업하시나요?`,
+    });
+  }
+
+  /*회원 활동 목록 신고 받은 내역 탭 Table Data 설정 */
+  interface DataTypeUserReceiveReport {
+    key: React.Key;
+    reportNum: number;
+    nickNameReporter: string;
+    reason: string;
+    postNum: number;
+    commentNum: number;
+  }
+
+  const columnsUserReceiveReport: ColumnsType<DataTypeUserReceiveReport> = [
+    {
+      title: '신고 번호',
+      dataIndex: 'reportNum',
+      align: 'center',
+    },
+    {
+      title: '신고자',
+      dataIndex: 'nickNameReporter',
+      align: 'center',
+    },
+    {
+      title: '신고 사유',
+      dataIndex: 'reason',
+      align: 'center',
+    },
+    {
+      title: '게시글 번호',
+      dataIndex: 'postNum',
+      align: 'center',
+    },
+    {
+      title: '댓글 번호',
+      dataIndex: 'commentNum',
+      align: 'center',
+    },
+  ];
+
+  const dataUserReceiveReport: DataTypeUserReceiveReport[] = [];
+  for (let i = 1; i < 11; i++) {
+    dataUserReceiveReport.push({
+      key: i,
+      reportNum: i,
+      nickNameReporter: `reporter ${i}`,
+      reason: `신고 사유 ${i}`,
+      postNum: i * 1231,
+      commentNum: i * 362,
+    });
+  }
+
+  /*회원 활동 목록 신고한 내역 탭 Table Data 설정 */
+  interface DataTypeUserSendReport {
+    key: React.Key;
+    reportNum: number;
+    nickNameReceiver: string;
+    reason: string;
+    postNum: number;
+    commentNum: number;
+  }
+
+  const columnsUserSendReport: ColumnsType<DataTypeUserSendReport> = [
+    {
+      title: '신고 번호',
+      dataIndex: 'reportNum',
+      align: 'center',
+    },
+    {
+      title: '신고 받은 사람',
+      dataIndex: 'nickNameReceiver',
+      align: 'center',
+    },
+    {
+      title: '신고 사유',
+      dataIndex: 'reason',
+      align: 'center',
+    },
+    {
+      title: '게시글 번호',
+      dataIndex: 'postNum',
+      align: 'center',
+    },
+    {
+      title: '댓글 번호',
+      dataIndex: 'commentNum',
+      align: 'center',
+    },
+  ];
+
+  const dataUserSendReport: DataTypeUserSendReport[] = [];
+  for (let i = 1; i < 11; i++) {
+    dataUserSendReport.push({
+      key: i,
+      reportNum: i,
+      nickNameReceiver: `receiver ${i}`,
+      reason: `신고 사유 ${i}`,
+      postNum: i * 1231,
+      commentNum: i * 362,
+    });
+  }
+
   const contentList: Record<string, React.ReactNode> = {
-    게시글: <p>content1</p>,
-    댓글: <p>content2</p>,
-    신고받은내역: <p>content2</p>,
-    신고한내역: <p>content2</p>,
+    게시글: <Table columns={columnsUserPost} dataSource={dataUserPost} />,
+    댓글: <Table columns={columnsUserComment} dataSource={dataUserComment} />,
+    신고받은내역: (
+      <Table
+        columns={columnsUserReceiveReport}
+        dataSource={dataUserReceiveReport}
+      />
+    ),
+    신고한내역: (
+      <Table columns={columnsUserSendReport} dataSource={dataUserSendReport} />
+    ),
   };
 
-  const [activeTabKey1, setActiveTabKey1] = useState<string>('tab1');
+  const [activeTabKey, setActiveTabKey] = useState<string>('');
 
-  const onTab1Change = (key: string) => {
-    setActiveTabKey1(key);
+  const onTabChange = (key: string) => {
+    setActiveTabKey(key);
   };
 
   /*기본 회원 조회 화면 Table Data 설정 */
@@ -265,11 +491,8 @@ const UserManagementPage = () => {
   const [modalBlackList, setModalBlackList] = useState(false);
   const [modalDelUser, setModalDelUser] = useState(false);
   const [searchFilter, setSearchFilter] = useState<string>();
-  const [userUid, setUserUid] = useState<number>();
-
-  const onChangeFilter = (value: string) => {
-    setFilter(value);
-  };
+  const [userNickName, setUserNickName] = useState<string>();
+  const [userRealName, setUserRealName] = useState<string>();
 
   /*블랙리스트 등록 모달 handle 함수*/
   const showModalBlackList = () => {
@@ -312,40 +535,45 @@ const UserManagementPage = () => {
   const hasSelected = selectedRowKeys.length > 0;
 
   /*필터 검색*/
-  const handleSearchBtn = () => {};
-
-  const onChangeSearchFilter = (value: any) => {
-    setSearchFilter(value);
+  const handleSearchBtn = () => {
+    //이름과 닉네임으로 사용자 검색
   };
 
-  const onChangeSearchUid = (value: any) => {
-    setUserUid(value);
+  const onChangeSearchRealName = (value: any) => {
+    setUserRealName(value);
   };
+
+  const onChangeSearchNickName = (value: any) => {
+    setUserNickName(value);
+  };
+
+  /*회원 정보 수정 모달 onChange 함수*/
+  const [editRealName, setEditRealName] = useState('');
+  const [editNickName, setEditNickName] = useState('');
+  const [editTown, setEditTown] = useState('');
+  const [editBitrh, setEdiBirh] = useState('');
+
+  const onChangeEditNickName = (value: any) => {};
+  const onChangeEditRealName = (value: any) => {};
+  const onChangeEditTown = (value: any) => {};
+  const onChangeEditBirth = (value: any) => {};
 
   return (
     <div>
       <Space direction="vertical" css={topWrapperCSS}>
         <Card title="회원 관리" style={{ width: 1630, height: 970 }}>
           <Card style={{ textAlign: 'center' }}>
-            <Select
-              defaultValue="필터"
-              style={{ width: 140 }}
-              onChange={onChangeFilter}
-              options={[
-                { value: '이름', label: '이름' },
-                { value: '닉네임', label: '닉네임' },
-              ]}
-            />
+            <Text strong>이름</Text>
             <Input
-              style={{ width: 170, marginLeft: 20 }}
-              onChange={onChangeSearchFilter}
+              css={{ width: 170, marginLeft: 20 }}
+              onChange={onChangeSearchRealName}
             />
             <Text strong style={{ marginLeft: 90 }}>
-              회원 번호
+              닉네임
             </Text>
             <Input
-              style={{ width: 170, marginLeft: 20 }}
-              onChange={onChangeSearchUid}
+              css={{ width: 170, marginLeft: 20 }}
+              onChange={onChangeSearchNickName}
             />
             <Button
               css={css`
@@ -435,14 +663,14 @@ const UserManagementPage = () => {
         onCancel={handleCancelDetail}
         okText="확인"
         cancelText="취소"
+        width=""
       >
         <Card
-          style={{ width: '100%' }}
           tabList={tabList}
-          activeTabKey={activeTabKey1}
-          onTabChange={onTab1Change}
+          activeTabKey={activeTabKey}
+          onTabChange={onTabChange}
         >
-          {contentList[activeTabKey1]}
+          {contentList[activeTabKey]}
         </Card>
       </Modal>
 
@@ -451,7 +679,7 @@ const UserManagementPage = () => {
         open={modalEdit}
         onOk={handleOkEdit}
         onCancel={handleCancelEdit}
-        okText="확인"
+        okText="수정"
         cancelText="취소"
       ></Modal>
     </div>

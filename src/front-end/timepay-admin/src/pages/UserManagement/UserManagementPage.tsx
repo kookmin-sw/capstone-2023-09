@@ -345,6 +345,7 @@ const UserManagementPage = () => {
     profileImg: any;
     timePay: number;
 
+    blackList: string;
     detail: any;
     edit: any;
   }
@@ -385,6 +386,11 @@ const UserManagementPage = () => {
       dataIndex: 'detail',
       align: 'center',
     },
+    {
+      title: '블랙리스트 여부',
+      dataIndex: 'blackList',
+      align: 'center',
+    },
 
     {
       title: '정보 수정',
@@ -405,6 +411,7 @@ const UserManagementPage = () => {
       profileImg: <Button onClick={showModalProfileImage}>사진 보기</Button>,
       timePay: i * 100 + i,
 
+      blackList: `X`,
       detail: <Button onClick={showModalDetail}>활동 보기</Button>,
       edit: <Button onClick={showModalEdit}>수정</Button>,
     });
@@ -438,6 +445,7 @@ const UserManagementPage = () => {
   ];
 
   const dataBlackList: DataTypeBlackList[] = [];
+  /*
   for (let i = 0; i < 5; i++) {
     dataBlackList.push({
       key: i,
@@ -446,7 +454,7 @@ const UserManagementPage = () => {
 
       timePay: i * 100 + i,
     });
-  }
+  }*/
 
   /*회원 삭제 모달 Table Data 설정 */
   interface DataTypeDelUser {
@@ -497,6 +505,21 @@ const UserManagementPage = () => {
   /*블랙리스트 등록 모달 handle 함수*/
   const showModalBlackList = () => {
     setModalBlackList(true);
+
+    //체크된 회원 데이터 파싱 후, 모달에 띄우기
+    dataBlackList
+      .push( {  dataBlackList.push({}}/*{
+      key: i,
+      uid: i * 12 + i,
+      realName: `realname ${i}`,
+
+      timePay: i * 100 + i,
+    }*/
+    // data[selectedRowKeys[]]
+  
+      //data.map((user)=>)
+      )
+      )
   };
 
   const handleOkBlackList = () => {
@@ -557,6 +580,8 @@ const UserManagementPage = () => {
   const onChangeEditRealName = (value: any) => {};
   const onChangeEditTown = (value: any) => {};
   const onChangeEditBirth = (value: any) => {};
+
+  /*메인에서 체크된 row들 데이터 파싱해서 블랙리스트로 넘기기 */
 
   return (
     <div>
@@ -634,7 +659,7 @@ const UserManagementPage = () => {
           </Space>
           <Space>
             <Table
-              style={{ width: 1570 }}
+              css={{ width: 1570 }}
               rowSelection={rowSelection}
               columns={columns}
               dataSource={data}

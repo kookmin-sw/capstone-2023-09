@@ -8,12 +8,20 @@ import {
   Typography,
   Modal,
   Image,
+  Form,
+  message,
 } from 'antd';
 import React from 'react';
 import { useState } from 'react';
 import { css } from '@emotion/react';
 import type { ColumnsType } from 'antd/es/table';
-import { VerticalAlignBottomOutlined } from '@ant-design/icons';
+import sampleImg from '../../assets/images/timepayLogo.png';
+import { siData } from './Data/SIDATA';
+import { guData } from './Data/GUDATA';
+import { dongData } from './Data/DONGDATA';
+
+/*행정동 타입 선언*/
+type DongName = keyof typeof dongData;
 
 /*수직 수평 중앙 정렬*/
 const topWrapperCSS = css`
@@ -48,18 +56,116 @@ const UserManagementPage = () => {
   };
 
   /*회원 정보 수정 모달 설정 */
+
+  /*회원 정보 수정 모달 onChange 함수 - 프로필 이미지, 닉네임, 지역, 소개글*/
+  const [editProfileImg, setEditProfileImg] = useState(sampleImg);
+  const [editNickName, setEditNickName] = useState('');
+  const [editTown, setEditTown] = useState('');
+  const [editIntroduction, setEditIntroduction] = useState('');
+
+  const onChangeEditProfileImg = (value: any) => {
+    setEditProfileImg(
+      'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+    );
+  };
+  const onChangeEditNickName = (value: any) => {
+    setEditNickName(value);
+  };
+  const onChangeEditTown = (value: any) => {};
+  const onChangeEditIntroduction = (value: any) => {};
+
+  /* 닉네임 유효성 검사 커스텀 */
+  const rightNickname = (_: any, value: string) => {
+    const nickname_regExp = /^[a-zA-Zㄱ-힣0-9]{2,16}$/;
+    if (!value) {
+      return Promise.reject(new Error('닉네임을 입력해 주세요.'));
+    } else if (value.search(/\s/) != -1) {
+      return Promise.reject(new Error('닉네임을 공백 없이 입력해 주세요.'));
+    }
+    if (!nickname_regExp.test(value)) {
+      return Promise.reject(
+        new Error(
+          '닉네임은 한글, 영어, 숫자를 조합하여 2자 이상 16자 이하로 입력해 주세요.',
+        ),
+      );
+    }
+    return Promise.resolve();
+  };
+
+  /*From Check*/
+  const onFinishJoin = () => {
+    console.log('회원가입 성공!');
+  };
+
+  const onFinishFailedJoin = () => {
+    console.log('회원가입 실패!');
+  };
+
+  /*지역*/
+  const [gu, setGu] = useState(dongData[guData[0]]);
+  const [dong, setDong] = useState(dongData[guData[0]][0]);
+
+  const [guText, setGuText] = useState<string>('');
+  const [dongText, setDongText] = useState<string>('');
+
+  const onChangeGu = (value: DongName) => {
+    setGu(dongData[value]);
+    setGuText(value.valueOf());
+  };
+
+  const onChangeDong = (value: DongName) => {
+    setDong(value);
+    setDongText(value.valueOf());
+    const town: string = guText + dongText;
+    setEditTown(town);
+  };
+
+  /*지역, 생년월일 null check*/
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const warning = (value: string) => {
+    messageApi.open({
+      type: 'warning',
+      content: value + '을 입력해 주세요.',
+    });
+  };
+
+  /*Handle 수정 완료 Btn*/
+  const handleOkEdit = async () => {
+    console.log(dong);
+
+    if (gu === dongData[guData[0]] || dong === '동') {
+      warning('지역');
+    } else {
+      let formData = new FormData();
+      //formData.append('user', profileImage);
+    }
+  };
+
   const [modalEdit, setModalEdit] = useState(false);
+
+  const [form] = Form.useForm();
 
   const showModalEdit = () => {
     setModalEdit(true);
   };
 
-  const handleOkEdit = () => {
-    setModalEdit(false);
-  };
-
   const handleCancelEdit = () => {
     setModalEdit(false);
+    setEditProfileImg(sampleImg);
+    setEditNickName('');
+    setGu(dongData[guData[0]]);
+    setDong(dongData[guData[0]][0]);
+
+    setGuText('');
+    setDongText('');
+
+    form.setFieldsValue({
+      editNickName: '',
+      editSi: '서울특별시',
+      editGu: '구',
+      editDong: '동',
+    });
   };
 
   /*회원 활동 목록 모달 설정 */
@@ -484,15 +590,6 @@ const UserManagementPage = () => {
   ];
 
   const dataDelUser: DataTypeDelUser[] = [];
-  for (let i = 0; i < 3; i++) {
-    dataDelUser.push({
-      key: i,
-      uid: i * 12 + i,
-      realName: `realname ${i}`,
-
-      timePay: i * 100 + i,
-    });
-  }
 
   const { Text } = Typography;
   const [filter, setFilter] = useState<string>();
@@ -507,19 +604,6 @@ const UserManagementPage = () => {
     setModalBlackList(true);
 
     //체크된 회원 데이터 파싱 후, 모달에 띄우기
-    dataBlackList
-      .push( {  dataBlackList.push({}}/*{
-      key: i,
-      uid: i * 12 + i,
-      realName: `realname ${i}`,
-
-      timePay: i * 100 + i,
-    }*/
-    // data[selectedRowKeys[]]
-  
-      //data.map((user)=>)
-      )
-      )
   };
 
   const handleOkBlackList = () => {
@@ -569,17 +653,6 @@ const UserManagementPage = () => {
   const onChangeSearchNickName = (value: any) => {
     setUserNickName(value);
   };
-
-  /*회원 정보 수정 모달 onChange 함수*/
-  const [editRealName, setEditRealName] = useState('');
-  const [editNickName, setEditNickName] = useState('');
-  const [editTown, setEditTown] = useState('');
-  const [editBitrh, setEdiBirh] = useState('');
-
-  const onChangeEditNickName = (value: any) => {};
-  const onChangeEditRealName = (value: any) => {};
-  const onChangeEditTown = (value: any) => {};
-  const onChangeEditBirth = (value: any) => {};
 
   /*메인에서 체크된 row들 데이터 파싱해서 블랙리스트로 넘기기 */
 
@@ -706,7 +779,68 @@ const UserManagementPage = () => {
         onCancel={handleCancelEdit}
         okText="수정"
         cancelText="취소"
-      ></Modal>
+      >
+        <Space css={topWrapperCSS} align="baseline">
+          {contextHolder}
+          <Form
+            form={form}
+            name="JoinPage"
+            onFinish={onFinishJoin}
+            onFinishFailed={onFinishFailedJoin}
+          >
+            <Form.Item name="editProfileImage">
+              <Image
+                src={editProfileImg}
+                width={100}
+                height={100}
+                //className="EditprofileImage"
+              />
+              <Button onClick={onChangeEditProfileImg} css={{ marginLeft: 30 }}>
+                기본 이미지로 변경
+              </Button>
+            </Form.Item>
+
+            <Form.Item
+              label="닉네임"
+              name="editNickName"
+              css={{ marginTop: 60 }}
+              rules={[{ validator: rightNickname }]}
+            >
+              <Input onChange={onChangeEditNickName} />
+            </Form.Item>
+
+            <Form.Item name="editSi">
+              <Select
+                defaultValue={siData[0]}
+                options={siData.map((si) => ({
+                  label: si,
+                  value: si,
+                }))}
+              />
+            </Form.Item>
+
+            <Form.Item name="editGu">
+              <Select
+                onChange={onChangeGu}
+                options={guData.map((province) => ({
+                  label: province,
+                  value: province,
+                }))}
+                style={{ width: 100 }}
+              />
+            </Form.Item>
+
+            <Form.Item name="editDong">
+              <Select
+                value={dong as DongName}
+                onChange={onChangeDong}
+                options={gu.map((city) => ({ label: city, value: city }))}
+                style={{ width: 100 }}
+              />
+            </Form.Item>
+          </Form>
+        </Space>
+      </Modal>
     </div>
   );
 };

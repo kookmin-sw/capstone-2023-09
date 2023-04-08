@@ -1,5 +1,7 @@
 package com.capstone.timepay.service.board.service;
 
+import com.capstone.timepay.domain.comment.Comment;
+import com.capstone.timepay.domain.comment.CommentRepository;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
@@ -23,6 +25,7 @@ import java.util.Map;
 public class FreeBoardCommentService {
     private final FreeBoardCommentRepository freeBoardCommentRepository;
     private final FreeBoardRepository freeBoardRepository;
+    private final CommentRepository commentRepository;
 
     // 댓글 작성
     @Transactional
@@ -38,6 +41,15 @@ public class FreeBoardCommentService {
 
         freeBoardComment.setUuid(freeBoardCommentDTO.getUuid());
         freeBoardComment.setFreeBoard(freeBoard);
+
+        /**
+         * 댓글 전체 조회를 위한 로직
+         */
+        Comment comment = new Comment();
+        comment.setUuid(freeBoardCommentDTO.getUuid());
+        comment.setContent(freeBoardCommentDTO.getContent());
+        comment.setBoardTitle(freeBoard.getTitle());
+        commentRepository.save(comment);
         freeBoardCommentRepository.save(freeBoardComment);
 
         return FreeBoardCommentDTO.toFreeBoardCommentDTO(freeBoardComment);

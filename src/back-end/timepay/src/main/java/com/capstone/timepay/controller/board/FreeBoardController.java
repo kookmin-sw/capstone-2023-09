@@ -51,53 +51,64 @@ public class FreeBoardController {
 
     @ApiOperation(value = "자유게시글 수정")
     @PutMapping("/update/{id}")
-    public Map<String, Object> update(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
+    public ResponseEntity<Map<String, Object>> update(@RequestBody FreeBoardDTO freeBoardDTO,
+                                                      @PathVariable("id") Long id,
+                                                      @RequestHeader(name = "uuid") Long uuid)
     {
-        Map<String, Object> updateMap = new HashMap<>();
-        FreeBoard freeBoard = freeBoardService.getId(id);
-        if (freeBoard == null)
-        {
-            updateMap.put("success", false);
-            updateMap.put("message", "해당 게시글을 찾을 수 없습니다.");
-            return updateMap;
-        }
+        try {
+            Map<String, Object> updateMap = new HashMap<>();
+            FreeBoard freeBoard = freeBoardService.getId(id);
+            if (freeBoard == null) {
+                updateMap.put("success", false);
+                updateMap.put("message", "해당 게시글을 찾을 수 없습니다.");
+                return new ResponseEntity<>(updateMap, HttpStatus.NOT_FOUND);
+            }
 
-        if (!freeBoard.getUuid().equals(freeBoardDTO.getUuid()))
-        {
-            updateMap.put("success", false);
-            updateMap.put("message", "수정 권한이 없습니다");
-            return updateMap;
-        }
+            if (!freeBoard.getUuid().equals(uuid)) {
+                updateMap.put("success", false);
+                updateMap.put("message", "수정 권한이 없습니다");
+                return new ResponseEntity<>(updateMap, HttpStatus.UNAUTHORIZED);
+            }
 
-        freeBoardService.update(id, freeBoardDTO);
-        updateMap.put("success", true);
-        updateMap.put("freeBoard", freeBoard);
-        return updateMap;
+            freeBoardService.update(id, freeBoardDTO);
+            updateMap.put("success", true);
+            updateMap.put("freeBoard", freeBoard);
+            return new ResponseEntity<>(updateMap, HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, Object> errorMap = new HashMap<>();
+            errorMap.put("success", false);
+            errorMap.put("message", "서버 에러: " + e.getMessage());
+            return new ResponseEntity<>(errorMap, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "자유게시글 삭제")
     @DeleteMapping ("/delete/{id}")
-    public Map<String, Object> delete(@RequestBody FreeBoardDTO freeBoardDTO, @PathVariable("id") Long id)
+    public ResponseEntity<Map<String, Object>> delete(@RequestBody FreeBoardDTO freeBoardDTO,
+                                                      @PathVariable("id") Long id,
+                                                      @RequestHeader(name = "uuid") Long uuid)
     {
         Map<String, Object> deleteMap = new HashMap<>();
-        FreeBoard freeBoard = freeBoardService.getId(id);
-        if (freeBoard == null)
-        {
+        try {
+            FreeBoard freeBoard = freeBoardService.getId(id);
+            if (freeBoard == null) {
+                deleteMap.put("success", false);
+                deleteMap.put("message", "해당 게시글을 찾을 수 없습니다.");
+                return new ResponseEntity<>(deleteMap, HttpStatus.NOT_FOUND);
+            }
+            if (!freeBoard.getUuid().equals(uuid)) {
+                deleteMap.put("success", false);
+                deleteMap.put("message", "삭제 권한이 없습니다");
+                return new ResponseEntity<>(deleteMap, HttpStatus.UNAUTHORIZED);
+            }
+            freeBoardService.delete(id);
+            deleteMap.put("success", true);
+            return ResponseEntity.ok(deleteMap);
+        } catch (Exception e) {
             deleteMap.put("success", false);
-            deleteMap.put("message", "해당 게시글을 찾을 수 없습니다.");
-            return deleteMap;
+            deleteMap.put("message", "게시글 삭제 중 오류가 발생했습니다.");
+            return new ResponseEntity<>(deleteMap, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        if (!freeBoard.getUuid().equals(freeBoardDTO.getUuid()))
-        {
-            deleteMap.put("success", false);
-            deleteMap.put("message", "삭제 권한이 없습니다");
-            return deleteMap;
-        }
-
-        freeBoardService.delete(id);
-        deleteMap.put("success", true);
-        return deleteMap;
     }
 
 }

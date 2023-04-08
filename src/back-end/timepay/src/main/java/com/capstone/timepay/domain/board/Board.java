@@ -19,8 +19,11 @@ public class Board extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;
 
-    @Column
-    private Long fBoardId;
-    private Long dBoardId;
+    private Long uuid;
+    private String title;
+    private String category; // 이 글이 자유게시판인지 거래게시판인지
+
+    @Enumerated(EnumType.STRING)
+    private BoardStatus boardStatus;
 
 }

@@ -80,7 +80,7 @@ public class FreeBoardService
         board.setBoardStatus(BoardStatus.FREE_BOARD);
         board.setUuid(freeBoardDTO.getUuid());
         board.setTitle(freeBoardDTO.getTitle());
-        board.setCategory("자유게시판");
+        board.setCategory("free");
         boardRepository.save(board);
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }

@@ -80,7 +80,7 @@ public class DealBoardService
         board.setUuid(dealBoardDTO.getUuid());
         board.setTitle(dealBoardDTO.getTitle());
         board.setTimePay(dealBoardDTO.getPay());
-        board.setCategory("거래게시판");
+        board.setCategory("deal");
         boardRepository.save(board);
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }

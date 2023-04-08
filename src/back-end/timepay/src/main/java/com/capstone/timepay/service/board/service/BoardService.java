@@ -16,4 +16,10 @@ public class BoardService {
     public List<Board> getBoardsByUuid(Long uuid) {
         return boardRepository.findByUuid(uuid);
     }
+
+    public List<Board> getBoardsByUuidAndCategory(Long uuid, String category)
+    {
+        return boardRepository.getBoardsByUuidAndCategory(uuid, category);
+    }
+
 }

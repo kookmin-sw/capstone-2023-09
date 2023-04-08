@@ -30,4 +30,20 @@ public class BoardController {
         }
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
+
+
+    /**
+     * 카테고리는 free와 deal가 있다
+     */
+    @GetMapping("/{uuid}/{category}")
+    @ApiOperation(value = "해당 유저의 카테고리게시판 조회")
+    public ResponseEntity<List<Board>> getUserBoardsByCategory(@PathVariable Long uuid,
+                                                               @PathVariable String category) {
+        List<Board> boards = boardService.getBoardsByUuidAndCategory(uuid, category);
+        if (boards.isEmpty())
+        {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(boards, HttpStatus.OK);
+    }
 }

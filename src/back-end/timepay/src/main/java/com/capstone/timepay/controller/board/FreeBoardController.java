@@ -91,7 +91,7 @@ public class FreeBoardController {
         if (!freeBoard.getUuid().equals(freeBoardDTO.getUuid()))
         {
             deleteMap.put("success", false);
-            deleteMap.put("message", "수정 권한이 없습니다");
+            deleteMap.put("message", "삭제 권한이 없습니다");
             return deleteMap;
         }
 

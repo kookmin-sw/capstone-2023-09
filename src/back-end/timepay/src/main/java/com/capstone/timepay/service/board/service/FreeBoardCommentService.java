@@ -67,4 +67,9 @@ public class FreeBoardCommentService {
         });
         freeBoardCommentRepository.deleteById(commentId);
     }
+
+    @Transactional
+    public void update(FreeBoardComment freeBoardComment) {
+        freeBoardCommentRepository.save(freeBoardComment);
+    }
 }

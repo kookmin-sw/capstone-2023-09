@@ -1,10 +1,7 @@
 package com.capstone.timepay.domain.board;
 
 import com.capstone.timepay.domain.BaseTimeEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Board extends BaseTimeEntity {
 
@@ -21,6 +19,7 @@ public class Board extends BaseTimeEntity {
 
     private Long uuid;
     private String title;
+    private int timePay;
     private String category; // 이 글이 자유게시판인지 거래게시판인지
 
     @Enumerated(EnumType.STRING)

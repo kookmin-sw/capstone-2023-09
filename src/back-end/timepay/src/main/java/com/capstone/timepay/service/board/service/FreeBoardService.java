@@ -1,5 +1,8 @@
 package com.capstone.timepay.service.board.service;
 
+import com.capstone.timepay.domain.board.Board;
+import com.capstone.timepay.domain.board.BoardRepository;
+import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
@@ -25,6 +28,7 @@ import java.util.stream.Collectors;
 public class FreeBoardService
 {
     private final FreeBoardRepository freeBoardRepository;
+    private final BoardRepository boardRepository;
 
     public FreeBoard getId(Long id)
     {
@@ -68,6 +72,16 @@ public class FreeBoardService
         // TODO: uuid 정보는 숨겨야하지 않을까
         freeBoard.setUuid(freeBoardDTO.getUuid());
         freeBoardRepository.save(freeBoard);
+
+        /**
+         Board를 통해 한꺼번에 조회할 수 있도록 추가
+         */
+        Board board = new Board();
+        board.setBoardStatus(BoardStatus.FREE_BOARD);
+        board.setUuid(freeBoardDTO.getUuid());
+        board.setTitle(freeBoardDTO.getTitle());
+        board.setCategory("자유게시판");
+        boardRepository.save(board);
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }
 
@@ -83,6 +97,13 @@ public class FreeBoardService
         freeBoard.setCategory(freeBoardDTO.getCategory());
         freeBoard.setUpdatedAt(LocalDateTime.now());
         freeBoard.setHidden(freeBoardDTO.isHidden());
+
+        /**
+         Board를 통해 한꺼번에 조회할 수 있도록 추가
+         */
+        Board board = new Board();
+        board.setBoardStatus(BoardStatus.FREE_BOARD);
+        board.setTitle(freeBoardDTO.getTitle());
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }
 

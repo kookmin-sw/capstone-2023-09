@@ -1,5 +1,8 @@
 package com.capstone.timepay.service.board.service;
 
+import com.capstone.timepay.domain.board.Board;
+import com.capstone.timepay.domain.board.BoardRepository;
+import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.domain.dealBoard.DealBoardRepository;
 import com.capstone.timepay.service.board.dto.DealBoardDTO;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 public class DealBoardService
 {
     private final DealBoardRepository dealBoardRepository;
+    private final BoardRepository boardRepository;
 
     public DealBoard getId(Long id)
     {
@@ -67,6 +71,17 @@ public class DealBoardService
         dealBoard.setHidden(dealBoardDTO.isHidden());
         dealBoard.setUuid(dealBoardDTO.getUuid());
         dealBoardRepository.save(dealBoard);
+
+        /**
+         Board를 통해 한꺼번에 조회할 수 있도록 추가
+         */
+        Board board = new Board();
+        board.setBoardStatus(BoardStatus.MATCHING_IN_PROGRESS);
+        board.setUuid(dealBoardDTO.getUuid());
+        board.setTitle(dealBoardDTO.getTitle());
+        board.setTimePay(dealBoardDTO.getPay());
+        board.setCategory("거래게시판");
+        boardRepository.save(board);
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 

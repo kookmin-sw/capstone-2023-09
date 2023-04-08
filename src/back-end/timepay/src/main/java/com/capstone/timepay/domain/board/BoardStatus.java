@@ -1,7 +1,7 @@
 package com.capstone.timepay.domain.board;
 
 public enum BoardStatus {
-    NULL,                   // 자유게시판일때
+    FREE_BOARD,                   // 자유게시판일때
     MATCHING_IN_PROGRESS, // 매칭 중
     MATCHING_COMPLETE,    // 매칭 완료
     ACTIVITY_IN_PROGRESS, // 활동 중

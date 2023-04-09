@@ -51,7 +51,9 @@ public class DealBoardController
 
     @ApiOperation(value = "거래게시판 게시글 수정")
     @PutMapping("/update/{id}")
-    public Map<String, Object> update(@RequestBody DealBoardDTO dealBoardDTO, @PathVariable("id") Long id)
+    public Map<String, Object> update(@RequestBody DealBoardDTO dealBoardDTO,
+                                      @PathVariable("id") Long id,
+                                      @RequestHeader(name = "uuid") Long uuid)
     {
         Map<String, Object> updateMap = new HashMap<>();
         DealBoard dealBoard = dealBoardService.getId(id);
@@ -62,7 +64,7 @@ public class DealBoardController
             return updateMap;
         }
 
-        if (!dealBoard.getUuid().equals(dealBoardDTO.getUuid()))
+        if (!dealBoard.getUuid().equals(uuid))
         {
             updateMap.put("success", false);
             updateMap.put("message", "수정 권한이 없습니다");
@@ -77,7 +79,9 @@ public class DealBoardController
 
     @ApiOperation(value = "거래게시판 게시글 삭제")
     @DeleteMapping ("/delete/{id}")
-    public Map<String, Object> delete(@RequestBody DealBoardDTO dealBoardDTO, @PathVariable("id") Long id)
+    public Map<String, Object> delete(@RequestBody DealBoardDTO dealBoardDTO,
+                                      @PathVariable("id") Long id,
+                                      @RequestHeader(name = "uuid") Long uuid)
     {
         Map<String, Object> deleteMap = new HashMap<>();
         DealBoard dealBoard = dealBoardService.getId(id);
@@ -88,7 +92,7 @@ public class DealBoardController
             return deleteMap;
         }
 
-        if (!dealBoard.getUuid().equals(dealBoardDTO.getUuid()))
+        if (!dealBoard.getUuid().equals(uuid))
         {
             deleteMap.put("success", false);
             deleteMap.put("message", "삭제 권한이 없습니다");
@@ -104,7 +108,8 @@ public class DealBoardController
     @ApiOperation(value = "모집중에서 모집완료로 변경시키는 컨트롤러")
     @PutMapping("/{boardId}/start")
     public Map<String, Object> readyToStart(@RequestBody DealBoardDTO dealBoardDTO,
-                                            @PathVariable("boardId") Long boardId)
+                                            @PathVariable("boardId") Long boardId,
+                                            @RequestHeader(name = "uuid") Long uuid)
     {
         Map<String, Object> resultMap = new HashMap<>();
         DealBoard dealBoard  = dealBoardService.getId(boardId);
@@ -116,7 +121,7 @@ public class DealBoardController
             return resultMap;
         }
 
-        if (!dealBoard.getUuid().equals(dealBoardDTO.getUuid()))
+        if (!dealBoard.getUuid().equals(uuid))
         {
             resultMap.put("success", false);
             resultMap.put("message", "상태를 수정할 권한이 없습니다");

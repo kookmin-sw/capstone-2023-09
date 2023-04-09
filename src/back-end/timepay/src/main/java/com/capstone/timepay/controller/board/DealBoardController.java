@@ -99,4 +99,32 @@ public class DealBoardController
         deleteMap.put("success", true);
         return deleteMap;
     }
+
+    // == 글 작성 후 로직 == //
+    @ApiOperation(value = "모집중에서 모집완료로 변경시키는 컨트롤러")
+    @PutMapping("/{boardId}/start")
+    public Map<String, Object> readyToStart(@RequestBody DealBoardDTO dealBoardDTO,
+                                            @PathVariable("boardId") Long boardId)
+    {
+        Map<String, Object> resultMap = new HashMap<>();
+        DealBoard dealBoard  = dealBoardService.getId(boardId);
+
+        if (dealBoard == null)
+        {
+            resultMap.put("success", false);
+            resultMap.put("message", "해당 게시글을 찾을 수 없습니다");
+            return resultMap;
+        }
+
+        if (!dealBoard.getUuid().equals(dealBoardDTO.getUuid()))
+        {
+            resultMap.put("success", false);
+            resultMap.put("message", "상태를 수정할 권한이 없습니다");
+            return resultMap;
+        }
+
+        dealBoardService.modifyStatus(boardId, dealBoardDTO);
+        resultMap.put("success", true);
+        return resultMap;
+    }
 }

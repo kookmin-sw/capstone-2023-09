@@ -46,15 +46,15 @@ public class FreeBoard extends BaseTimeEntity
      */
     private Long uuid;
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeAttatchment> freeAttatchments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeRegister> freeRegisters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeBoardReport> freeBoardReports = new ArrayList<>();
 }

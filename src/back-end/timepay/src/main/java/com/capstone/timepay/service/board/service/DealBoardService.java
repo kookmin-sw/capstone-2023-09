@@ -70,6 +70,7 @@ public class DealBoardService
         dealBoard.setUpdatedAt(LocalDateTime.now());
         dealBoard.setHidden(dealBoardDTO.isHidden());
         dealBoard.setUuid(dealBoardDTO.getUuid());
+        dealBoard.setBoardStatus(BoardStatus.MATCHING_IN_PROGRESS);
         dealBoardRepository.save(dealBoard);
 
         /**
@@ -111,5 +112,15 @@ public class DealBoardService
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다!");
         });
         dealBoardRepository.deleteById(id);
+    }
+
+    @Transactional
+    public DealBoardDTO modifyStatus(Long boardId, DealBoardDTO boardDto)
+    {
+        DealBoard dealBoard = dealBoardRepository.findById(boardId).orElseThrow(() -> {
+            return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
+        });
+        dealBoard.setBoardStatus(BoardStatus.MATCHING_COMPLETE);
+        return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 }

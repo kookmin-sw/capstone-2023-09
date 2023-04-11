@@ -21,6 +21,7 @@ public class Board extends BaseTimeEntity {
     private String title;
     private int timePay;
     private String category; // 이 글이 자유게시판인지 거래게시판인지
+    private boolean isHidden;
 
     @Enumerated(EnumType.STRING)
     private BoardStatus boardStatus;

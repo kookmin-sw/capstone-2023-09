@@ -2,6 +2,7 @@ package com.capstone.timepay.controller.board;
 
 import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
+import com.capstone.timepay.service.board.dto.BoardDTO;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
 import com.capstone.timepay.service.board.service.BoardService;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,20 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+
+    @GetMapping("")
+    @ApiOperation(value = "전체게시판 조회")
+    public ResponseEntity<Page<BoardDTO>> getBoards(
+            @RequestParam(value = "pagingIndex", defaultValue = "0") int pagingIndex,
+            @RequestParam(value = "pagingSize", defaultValue = "50") int pagingSize)
+    {
+        Page<BoardDTO> paging = boardService.getBoards(pagingIndex, pagingSize);
+        if (paging.isEmpty())
+        {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(paging, HttpStatus.OK);
+    }
 
     @GetMapping("/{uuid}")
     @ApiOperation(value = "해당 유저의 게시판 조회")

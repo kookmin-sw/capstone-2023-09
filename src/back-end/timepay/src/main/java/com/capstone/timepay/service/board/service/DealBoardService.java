@@ -64,7 +64,8 @@ public class DealBoardService
         dealBoard.setContent(dealBoardDTO.getContent());
         dealBoard.setCategory(dealBoardDTO.getCategory());
         dealBoard.setLocation(dealBoardDTO.getLocation());
-        dealBoard.setStartTime(dealBoardDTO.getEndTime());
+        dealBoard.setStartTime(dealBoardDTO.getStartTime());
+        dealBoard.setEndTime(dealBoardDTO.getEndTime());
         dealBoard.setPay(dealBoardDTO.getPay());
         dealBoard.setCreatedAt(LocalDateTime.now());
         dealBoard.setUpdatedAt(LocalDateTime.now());

@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardSearchController
 {
-    private BoardService boardService;
+    private final BoardService boardService;
 
     @GetMapping("/search")
     public List<Board> boardSearch(

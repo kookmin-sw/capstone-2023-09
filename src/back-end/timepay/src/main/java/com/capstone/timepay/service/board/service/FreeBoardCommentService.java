@@ -1,5 +1,7 @@
 package com.capstone.timepay.service.board.service;
 
+import com.capstone.timepay.domain.comment.Comment;
+import com.capstone.timepay.domain.comment.CommentRepository;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
@@ -9,20 +11,25 @@ import com.capstone.timepay.service.board.dto.FreeBoardCommentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
 public class FreeBoardCommentService {
     private final FreeBoardCommentRepository freeBoardCommentRepository;
     private final FreeBoardRepository freeBoardRepository;
+    private final CommentRepository commentRepository;
 
     // 댓글 작성
     @Transactional
-    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO, Long uid)
+    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO)
     {
         FreeBoardComment freeBoardComment = new FreeBoardComment();
         freeBoardComment.setContent(freeBoardCommentDTO.getContent());
@@ -32,8 +39,17 @@ public class FreeBoardCommentService {
             return new IllegalArgumentException("게시판을 찾을 수 없습니다.");
         });
 
-        freeBoardComment.setUid(uid);
+        freeBoardComment.setUuid(freeBoardCommentDTO.getUuid());
         freeBoardComment.setFreeBoard(freeBoard);
+
+        /**
+         * 댓글 전체 조회를 위한 로직
+         */
+        Comment comment = new Comment();
+        comment.setUuid(freeBoardCommentDTO.getUuid());
+        comment.setContent(freeBoardCommentDTO.getContent());
+        comment.setBoardTitle(freeBoard.getTitle());
+        commentRepository.save(comment);
         freeBoardCommentRepository.save(freeBoardComment);
 
         return FreeBoardCommentDTO.toFreeBoardCommentDTO(freeBoardComment);
@@ -50,14 +66,22 @@ public class FreeBoardCommentService {
         return commentDTOS;
     }
 
-    // 댓글 삭제
-    @Transactional
-    public String deleteComment(Long commentId)
+    @Transactional(readOnly = true)
+    public FreeBoardComment getCommentId(Long id)
     {
+        return freeBoardCommentRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public void delete(Long commentId) {
         FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId).orElseThrow(() -> {
-            return new IllegalArgumentException("댓글을 찾을 수 없습니다");
+            return new IllegalArgumentException("Comment Id를 찾을 수 없습니다");
         });
         freeBoardCommentRepository.deleteById(commentId);
-        return "삭제 완료";
+    }
+
+    @Transactional
+    public void update(FreeBoardComment freeBoardComment) {
+        freeBoardCommentRepository.save(freeBoardComment);
     }
 }

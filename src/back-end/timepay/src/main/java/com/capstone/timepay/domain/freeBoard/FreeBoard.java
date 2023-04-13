@@ -21,10 +21,11 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 public class FreeBoard extends BaseTimeEntity
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long f_boardId;
 
     @Column(nullable = false, length = 100)
@@ -43,16 +44,17 @@ public class FreeBoard extends BaseTimeEntity
         TODO: 게시글 유형, 상태, 지급 타임페이, 장소 보낼필요있음
         유저 정보도 보내야하는것 아닌가?
      */
+    private Long uuid;
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeBoardComment> freeBoardComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeAttatchment> freeAttatchments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeRegister> freeRegisters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeBoardReport> freeBoardReports = new ArrayList<>();
 }

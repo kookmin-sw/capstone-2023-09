@@ -19,12 +19,12 @@ import java.util.List;
 public class FreeBoardComment extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long f_commentId;
 
     @Column // (nullable = false)
     private String content;
-    private Long uid;
+    private Long uuid;
 
     @OneToMany(mappedBy = "freeBoardComment", orphanRemoval = true)
     private List<FreeCommentReport> freeCommentReports = new ArrayList<>();

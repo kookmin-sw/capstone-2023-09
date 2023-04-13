@@ -26,8 +26,6 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/dev/spring/capstone1/src/back-end/timepay",
-    "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -40,7 +38,6 @@
       <option name="presentableId" value="Default" />
       <updated>1679714711498</updated>
       <workItem from="1679714712530" duration="1000" />
-      <workItem from="1679876593756" duration="219000" />
     </task>
     <servers />
   </component>

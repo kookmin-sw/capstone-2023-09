@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class DealBoardCommentDTO {
     private Long id;
     private String content;
-    private Long uid;
+    private Long uuid;
     private boolean isApplied;
     private boolean isAdopted;
     private boolean isHidden;
@@ -21,7 +21,7 @@ public class DealBoardCommentDTO {
         return new DealBoardCommentDTO(
                 dealBoardComment.getD_commentId(),
                 dealBoardComment.getContent(),
-                dealBoardComment.getUid(),
+                dealBoardComment.getUuid(),
                 dealBoardComment.isApplied(),
                 dealBoardComment.isAdopted(),
                 dealBoardComment.isHidden()

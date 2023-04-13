@@ -3,7 +3,7 @@ package com.capstone.timepay.domain.board;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
- * GET /api/posts?sort={sort}&category={category}
+ * GET /api/boards?sort={sort}&category={category}
  */
 public class BoardSearch {
 
@@ -15,10 +15,10 @@ public class BoardSearch {
     // 최신순
     public static Specification<Board> latest() {
         return (root, query, builder) -> {
-            query.orderBy(builder.desc(root.get("createdAt")));
-            return builder.conjunction();
-        };
-    }
+        query.orderBy(builder.desc(root.get("createdAt")));
+        return builder.conjunction();
+    };
+}
 
     // 과거순
     public static Specification<Board> oldest() {

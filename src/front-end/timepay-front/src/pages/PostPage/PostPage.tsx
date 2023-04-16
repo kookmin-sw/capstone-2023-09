@@ -26,6 +26,8 @@ import {
   cssPostDetailContent1,
   cssPostDetailContent2,
   cssPostDetailAttachment,
+  cssReportContainer,
+  cssReportBtnStyle,
   cssPostFooter,
   cssPostDetail,
   cssPostTextarea,
@@ -52,6 +54,8 @@ import { Comment } from '../../components/post/Comment';
 import Item from '../../components/post/Item';
 import InputText from '../../components/post/InputText';
 
+import { Form, Input } from 'antd';
+
 interface PostPageProps {
   post?: IPost;
 }
@@ -66,6 +70,23 @@ const Footer = Layout;
 const PostPage = ({ post }: PostPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [like, setLike] = useState(false);
+
+  const [form] = Form.useForm();
+  const { TextArea } = Input;
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 16 },
+  };
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const showReportModal = () => {
+    setIsOpenModal(true);
+  };
+  const onOk = () => {
+    setIsOpenModal(false);
+  };
+  const onCancel = () => {
+    setIsOpenModal(false);
+  };
 
   const [inputText, setInputText] = useState('');
   const [tasks, setTasks] = useState<TList[]>([
@@ -230,6 +251,47 @@ const PostPage = ({ post }: PostPageProps) => {
           <div css={cssPostDetailContent2}>{content}</div>
           <div css={cssPostDetailAttachment}>{attachment}</div>
         </div>
+        <div css={cssReportContainer}>
+          <Button css={cssReportBtnStyle} onClick={showReportModal}>
+            신고
+          </Button>
+        </div>
+        <Modal
+          title="신고하기"
+          open={isOpenModal}
+          onOk={onOk}
+          onCancel={onCancel}
+          footer={null}
+        >
+          <Form {...layout} form={form} style={{ width: '100%' }}>
+            <Form.Item
+              name="content"
+              label="신고사유"
+              rules={[{ required: true, message: '신고 사유를 적어주세요.' }]}
+            >
+              <TextArea rows={10} maxLength={100} style={{ resize: 'none' }} />
+            </Form.Item>
+            <div className="control-box">
+              <Button
+                style={{ marginRight: 20 }}
+                onClick={() => {
+                  onCancel();
+                  form.resetFields();
+                }}
+              >
+                취소
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ resize: 'none' }}
+              >
+                신고하기
+              </Button>
+            </div>
+          </Form>
+        </Modal>
+
         <div css={cssLine4} />
         <div css={cssCommentContainer}>
           <p>댓글</p>

@@ -35,6 +35,43 @@ export const cssPostPageStyle = css`
     font-size: 16px;
     margin-left: 20px;
   }
+
+  .image-container {
+    margin: 20px;
+  }
+  .cssImageWrapper {
+    display: flex;
+    flex-direction: row;
+  }
+  .fileButton {
+    content: '사진 변경';
+  }
+  .cssSelectedImage {
+    width: 100px;
+    height: 100px;
+  }
+  .cssImages {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .category-container {
+    margin: 0px 20px;
+  }
+  .category {
+    margin: 5px 10px;
+    padding: 10px;
+    font-size: 18px;
+    background-color: ${COMMON_COLOR.GRAY};
+    border: 1px solid ${COMMON_COLOR.LIGHT_GRAY};
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .category.selected {
+    background-color: ${COMMON_COLOR.MAIN3};
+    border: 1px solid ${COMMON_COLOR.MAIN3};
+  }
 `;
 export const cssPostTitleInputStyle = css`
   font-size: 25px;

@@ -166,6 +166,16 @@ export const cssPostDetailContent2 = css`
 export const cssPostDetailAttachment = css`
   margin-bottom: 10px;
 `;
+export const cssReportContainer = css`
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 25px;
+`;
+export const cssReportBtnStyle = css`
+  letter-spacing: 2px;
+  font-weight: 500;
+  background-color: ${COMMON_COLOR.LIGHT_GRAY};
+`;
 
 // comment
 export const cssCommentContainer = css`

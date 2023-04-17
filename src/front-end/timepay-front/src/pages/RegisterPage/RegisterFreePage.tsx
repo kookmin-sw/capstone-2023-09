@@ -161,40 +161,55 @@ const RegisterFreePage = () => {
           />
           <div css={cssLineStyle} />
           <div className="image-container">
-            {previewUrls.map((url, index) => (
-              <div className="cssImageWrapper" key={index}>
-                <img src={url} className="cssSelectedImage" alt="uploaded" />
-                <div className="cssImages">
-                  <div className="cssImagePlaceholder">
-                    <input
-                      className="fileButton"
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageChange(e, index)}
-                    />
-                  </div>
-                  <Button
-                    danger
-                    size="small"
-                    onClick={() => handleDeleteImage(index)}
-                  >
-                    삭제
-                  </Button>
-                </div>
-              </div>
-            ))}
+            <div className="imageFont">사진 ({images.length} / 5)</div>
+
             {previewUrls.length < MAX_IMAGES && (
-              <div className="cssImageWrapper">
+              <div className="cssImageWrapper1">
                 <div className="cssImagePlaceholder">
+                  <label htmlFor="upload">
+                    <div className="uploadBtn">
+                      📷 <br />
+                      사진 추가
+                    </div>
+                  </label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    multiple
+                    id="upload"
                   />
                 </div>
               </div>
             )}
+
+            <div className="images-container">
+              {previewUrls.map((url, index) => (
+                <div className="cssImageWrapper2" key={index}>
+                  <img src={url} className="cssSelectedImage" alt="uploaded" />
+                  <div className="cssImages">
+                    <div className="cssImagePlaceholder2">
+                      <label htmlFor="change">
+                        <div className="changeBtn">사진 변경</div>
+                      </label>
+                      <input
+                        className="fileButton"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageChange(e, index)}
+                        id="change"
+                      />
+                    </div>
+                    <Button
+                      danger
+                      className="deleteBtn"
+                      onClick={() => handleDeleteImage(index)}
+                    >
+                      삭제
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </Content>
       </div>

@@ -25,6 +25,8 @@ const { TextArea } = Input;
 
 const RegisterServePage = () => {
   const timepay = 1000;
+  const category = 'serve';
+  const state = '게시완료';
   const [title, setTitle] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -93,23 +95,23 @@ const RegisterServePage = () => {
     setContent(event.target.value);
   };
   const handleSubmit = () => {
-    // 게시글 작성 완료 처리
     axios
       .post('/api/deal-boards/write', {
+        category,
         title,
         content,
         location,
-        selectedCategory,
+        state,
       })
       .then((response) => {
         // 요청이 성공적으로 처리되었을 때 실행될 코드 작성
-        console.log('게시글이 성공적으로 등록되었습니다.');
+        console.log('게시글 등록!');
         // 등록 후에는 홈 화면으로 이동
         navigate(PATH.HOME);
       })
       .catch((error) => {
         // 요청이 실패했을 때 실행될 코드 작성
-        console.error('게시글 등록에 실패했습니다.', error);
+        console.error('게시글 등록 실패애애', error);
       });
   };
 

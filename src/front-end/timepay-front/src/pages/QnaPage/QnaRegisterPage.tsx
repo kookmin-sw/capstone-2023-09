@@ -19,13 +19,18 @@ import { selectedTagsQnaState } from '../../states/register';
 
 import axios from 'axios';
 import { getTokenFromCookie } from '../../utils/token';
+import { useCreateInquiry } from '../../api/hooks/inquiry';
+import { useQueryClient } from 'react-query';
 
 const { Header, Content, Footer } = Layout;
 const { TextArea } = Input;
 
 const QnaRegisterPage = () => {
-  const category = 'qna';
-  const state = '답변대기';
+  const queryclient = useQueryClient();
+  const useCreateInquiryMutation = useCreateInquiry();
+
+  const subject = 'subject';
+  const week = '4';
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   // 태그
@@ -48,29 +53,22 @@ const QnaRegisterPage = () => {
     setContent(event.target.value);
   };
   const handleSubmit = () => {
-    const token = getTokenFromCookie();
-    // 게시글 작성 완료 처리
-    axios
-      .post(
-        '/api/inquiry-boards/write',
-        { title, content, category, state },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+    useCreateInquiryMutation.mutateAsync(
+      { title, content, subject, week },
+      {
+        onSuccess: (data) => {
+          console.log('success');
+          // 새로고침 안해도 값이 추가되면 값이 바로 추가되게 하는 코드. (queryclient 변수와)
+          queryclient.invalidateQueries('');
         },
-      )
-      .then((response) => {
-        // 요청이 성공적으로 처리되었을 때 실행될 코드 작성
-        console.log('게시글이 등록🤩');
-        console.log(token);
-        // 등록 후에는 홈 화면으로 이동
-        navigate(PATH.HOME);
-      })
-      .catch((error) => {
-        // 요청이 실패했을 때 실행될 코드 작성
-        console.error('게시글 등록 실패🥹', error);
-      });
+        onError(error) {
+          console.log('error');
+        },
+        onSettled: (data) => {
+          console.log('dddddd');
+        },
+      },
+    );
 
     navigate(-1);
   };

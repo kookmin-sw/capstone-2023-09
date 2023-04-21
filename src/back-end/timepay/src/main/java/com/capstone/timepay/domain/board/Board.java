@@ -1,7 +1,14 @@
 package com.capstone.timepay.domain.board;
 
 import com.capstone.timepay.domain.BaseTimeEntity;
-import lombok.*;
+import com.capstone.timepay.domain.dealBoard.DealBoard;
+import com.capstone.timepay.domain.freeBoard.FreeBoard;
+import com.capstone.timepay.domain.user.User;
+import com.capstone.timepay.domain.userProfile.UserProfile;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -9,7 +16,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Entity
 public class Board extends BaseTimeEntity {
 
@@ -17,13 +23,11 @@ public class Board extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;
 
-    private Long uuid;
-    private String title;
-    private int timePay;
-    private String category; // 이 글이 자유게시판인지 거래게시판인지
-    private boolean isHidden;
+    @OneToOne
+    @JoinColumn(name = "f_boardId")
+    private FreeBoard freeBoard;
 
-    @Enumerated(EnumType.STRING)
-    private BoardStatus boardStatus;
-
+    @OneToOne
+    @JoinColumn(name = "d_boardId")
+    private DealBoard dealBoard;
 }

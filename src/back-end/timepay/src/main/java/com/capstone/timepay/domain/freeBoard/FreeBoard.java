@@ -1,6 +1,7 @@
 package com.capstone.timepay.domain.freeBoard;
 
 import com.capstone.timepay.domain.BaseTimeEntity;
+import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.dealAttatchment.DealAttatchment;
 import com.capstone.timepay.domain.dealBoardComment.DealBoardComment;
 import com.capstone.timepay.domain.dealBoardReport.DealBoardReport;
@@ -19,7 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Entity
 @Builder
 public class FreeBoard extends BaseTimeEntity
@@ -35,6 +35,7 @@ public class FreeBoard extends BaseTimeEntity
     @Column(nullable = false)
     private String content;
     private String category;
+    private String type;
 
     // 숨김처리
     @Column
@@ -44,7 +45,6 @@ public class FreeBoard extends BaseTimeEntity
         TODO: 게시글 유형, 상태, 지급 타임페이, 장소 보낼필요있음
         유저 정보도 보내야하는것 아닌가?
      */
-    private Long uuid;
 
     @OneToMany(mappedBy = "freeBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeBoardComment> freeBoardComments = new ArrayList<>();

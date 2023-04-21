@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 public class DealBoardComment extends BaseTimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long d_commentId;
 
     @Column(nullable = false)
@@ -29,20 +29,23 @@ public class DealBoardComment extends BaseTimeEntity {
     private boolean isAdopted;
     // 비공개여부
     private boolean isHidden;
-    private Long uuid;
 
-    @OneToMany(mappedBy = "dealBoardComment", orphanRemoval = true)
+    @OneToMany(mappedBy = "dealBoardComment", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealCommentReport> dealCommentReports = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="d_boardId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private DealBoard dealBoard;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    public void updateIsHidden(boolean isHidden){
+        this.isHidden = isHidden;
+    }
 
 
 }

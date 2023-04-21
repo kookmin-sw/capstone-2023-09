@@ -1,5 +1,6 @@
 package com.capstone.timepay.service.board.service;
 
+import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.comment.Comment;
 import com.capstone.timepay.domain.comment.CommentRepository;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
@@ -7,18 +8,15 @@ import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardCommentRepository;
 import com.capstone.timepay.domain.user.User;
+import com.capstone.timepay.domain.user.UserRepository;
 import com.capstone.timepay.service.board.dto.FreeBoardCommentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -26,31 +24,29 @@ public class FreeBoardCommentService {
     private final FreeBoardCommentRepository freeBoardCommentRepository;
     private final FreeBoardRepository freeBoardRepository;
     private final CommentRepository commentRepository;
-
+    private final UserRepository userRepository;
     // 댓글 작성
     @Transactional
-    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO)
+    public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO, String email)
     {
-        FreeBoardComment freeBoardComment = new FreeBoardComment();
-        freeBoardComment.setContent(freeBoardCommentDTO.getContent());
-        freeBoardComment.setCreatedAt(LocalDateTime.now());
-
+        User user = userRepository.findByEmail(email).orElse(null);
         FreeBoard freeBoard = freeBoardRepository.findById(boardId).orElseThrow(() -> {
             return new IllegalArgumentException("게시판을 찾을 수 없습니다.");
         });
 
-        freeBoardComment.setUuid(freeBoardCommentDTO.getUuid());
-        freeBoardComment.setFreeBoard(freeBoard);
-
-        /**
-         * 댓글 전체 조회를 위한 로직
-         */
-        Comment comment = new Comment();
-        comment.setUuid(freeBoardCommentDTO.getUuid());
-        comment.setContent(freeBoardCommentDTO.getContent());
-        comment.setBoardTitle(freeBoard.getTitle());
-        commentRepository.save(comment);
+        FreeBoardComment freeBoardComment = FreeBoardComment.builder()
+                .content(freeBoardCommentDTO.getContent())
+                .isHidden(freeBoardCommentDTO.isHidden())
+                .freeBoard(freeBoard)
+                .user(user)
+                .build();
         freeBoardCommentRepository.save(freeBoardComment);
+
+        Comment comment = Comment.builder().
+                freeBoardComment(freeBoardComment).
+                dealBoardComment(null).
+                build();
+        commentRepository.save(comment);
 
         return FreeBoardCommentDTO.toFreeBoardCommentDTO(freeBoardComment);
     }
@@ -72,16 +68,27 @@ public class FreeBoardCommentService {
         return freeBoardCommentRepository.findById(id).orElse(null);
     }
 
-    @Transactional(readOnly = true)
-    public void delete(Long commentId) {
+    // 댓글 삭제
+    @Transactional
+    public String delete(Long commentId)
+    {
         FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(commentId).orElseThrow(() -> {
-            return new IllegalArgumentException("Comment Id를 찾을 수 없습니다");
+            return new IllegalArgumentException("댓글을 찾을 수 없습니다");
         });
         freeBoardCommentRepository.deleteById(commentId);
+        return "삭제 완료";
     }
 
+    // 댓글 수정
     @Transactional
     public void update(FreeBoardComment freeBoardComment) {
         freeBoardCommentRepository.save(freeBoardComment);
+    }
+
+    public String getEmail(Long id)
+    {
+        FreeBoardComment freeBoardComment = freeBoardCommentRepository.findById(id).orElse(null);
+        User user = freeBoardComment.getUser();
+        return user.getEmail();
     }
 }

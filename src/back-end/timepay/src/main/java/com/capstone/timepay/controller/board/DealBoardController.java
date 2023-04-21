@@ -1,17 +1,30 @@
 package com.capstone.timepay.controller.board;
 
+
+import com.capstone.timepay.controller.board.request.ReportRequestDTO;
+import com.capstone.timepay.service.board.dto.DealBoardDTO;
+import com.capstone.timepay.service.board.service.DealBoardService;
+import com.capstone.timepay.service.board.service.ReportService;
+
 import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.service.board.dto.DealBoardDTO;
 import com.capstone.timepay.service.board.service.DealBoardService;
+import com.capstone.timepay.service.board.service.DealRegisterService;
+
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Page;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -20,6 +33,11 @@ import java.util.Map;
 public class DealBoardController
 {
     private final DealBoardService dealBoardService;
+
+    private final ReportService reportService;
+
+    private final DealRegisterService dealRegisterService;
+
 
     @ApiOperation(value = "거래게시판 모든 게시판 불러오기")
     @GetMapping("")
@@ -35,6 +53,34 @@ public class DealBoardController
         return new ResponseEntity<>(paging, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "도움주기 게시판 불러오기")
+    @GetMapping("/helper")
+    public ResponseEntity<Page<DealBoardDTO>> getHelperBoards(
+            @RequestParam(value = "pagingIndex", defaultValue = "0") int pagingIndex,
+            @RequestParam(value = "pagingSize", defaultValue = "50") int pagingSize)
+    {
+        Page<DealBoardDTO> paging = dealBoardService.getHelperDealBoard(pagingIndex, pagingSize);
+        if (paging.isEmpty())
+        {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(paging, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "도움받기 게시판 불러오기")
+    @GetMapping("/help")
+    public ResponseEntity<Page<DealBoardDTO>> getHelpBoards(
+            @RequestParam(value = "pagingIndex", defaultValue = "0") int pagingIndex,
+            @RequestParam(value = "pagingSize", defaultValue = "50") int pagingSize)
+    {
+        Page<DealBoardDTO> paging = dealBoardService.getHelpDealBoard(pagingIndex, pagingSize);
+        if (paging.isEmpty())
+        {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(paging, HttpStatus.OK);
+    }
+
     @ApiOperation(value = "거래게시판 개별 게시판 불러오기")
     @GetMapping("/{id}")
     public ResponseEntity<DealBoardDTO> getBoard(@PathVariable("id") Long id)
@@ -42,21 +88,30 @@ public class DealBoardController
         return new ResponseEntity(dealBoardService.getDealBoard(id), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "거래게시판 게시글 작성")
-    @PostMapping("/write")
-    public ResponseEntity write(@RequestBody DealBoardDTO dealBoardDTO)
+    @ApiOperation(value = "거래게시판 도움주기 게시글 작성")
+    @PostMapping("/write/helper")
+    public ResponseEntity helperWrite(@RequestBody DealBoardDTO dealBoardDTO, Principal principal)
     {
-        return new ResponseEntity(dealBoardService.write(dealBoardDTO), HttpStatus.OK);
+        return new ResponseEntity(dealBoardService.write(dealBoardDTO, principal.getName(), "helper"), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "거래게시판 도움받기 게시글 작성")
+    @PostMapping("/write/help")
+    public ResponseEntity getHelpWrite(@RequestBody DealBoardDTO dealBoardDTO, Principal principal)
+    {
+        return new ResponseEntity(dealBoardService.write(dealBoardDTO, principal.getName(), "help"), HttpStatus.OK);
     }
 
     @ApiOperation(value = "거래게시판 게시글 수정")
     @PutMapping("/update/{id}")
     public Map<String, Object> update(@RequestBody DealBoardDTO dealBoardDTO,
                                       @PathVariable("id") Long id,
-                                      @RequestHeader(name = "uuid") Long uuid)
+                                      Principal principal)
     {
         Map<String, Object> updateMap = new HashMap<>();
         DealBoard dealBoard = dealBoardService.getId(id);
+        String boardEmail = dealRegisterService.getEmail(id);
+
         if (dealBoard == null)
         {
             updateMap.put("success", false);
@@ -64,7 +119,7 @@ public class DealBoardController
             return updateMap;
         }
 
-        if (!dealBoard.getUuid().equals(uuid))
+        if (!principal.getName().equals(boardEmail))
         {
             updateMap.put("success", false);
             updateMap.put("message", "수정 권한이 없습니다");
@@ -81,9 +136,11 @@ public class DealBoardController
     @DeleteMapping ("/delete/{id}")
     public Map<String, Object> delete(@RequestBody DealBoardDTO dealBoardDTO,
                                       @PathVariable("id") Long id,
-                                      @RequestHeader(name = "uuid") Long uuid)
+                                      Principal principal)
     {
         Map<String, Object> deleteMap = new HashMap<>();
+        String boardEmail = dealRegisterService.getEmail(id);
+
         DealBoard dealBoard = dealBoardService.getId(id);
         if (dealBoard == null)
         {
@@ -92,7 +149,7 @@ public class DealBoardController
             return deleteMap;
         }
 
-        if (!dealBoard.getUuid().equals(uuid))
+        if (!principal.getName().equals(boardEmail))
         {
             deleteMap.put("success", false);
             deleteMap.put("message", "삭제 권한이 없습니다");
@@ -109,10 +166,11 @@ public class DealBoardController
     @PutMapping("/{boardId}/start")
     public Map<String, Object> readyToStart(@RequestBody DealBoardDTO dealBoardDTO,
                                             @PathVariable("boardId") Long boardId,
-                                            @RequestHeader(name = "uuid") Long uuid)
+                                            Principal principal)
     {
         Map<String, Object> resultMap = new HashMap<>();
         DealBoard dealBoard  = dealBoardService.getId(boardId);
+        String boardEmail = dealRegisterService.getEmail(boardId);
 
         if (dealBoard == null)
         {
@@ -121,7 +179,7 @@ public class DealBoardController
             return resultMap;
         }
 
-        if (!dealBoard.getUuid().equals(uuid))
+        if (!principal.getName().equals(boardEmail))
         {
             resultMap.put("success", false);
             resultMap.put("message", "상태를 수정할 권한이 없습니다");
@@ -132,4 +190,14 @@ public class DealBoardController
         resultMap.put("success", true);
         return resultMap;
     }
+
+    @PostMapping("/{boardId}/report")
+    @ApiOperation(value = "신고 API", notes = "JWT 토큰으로 유저를 구분하여 신고 DB에 작성합니다.")
+    public ResponseEntity<?> report(@PathVariable("boardId") Long boardId, @RequestBody ReportRequestDTO requestDTO) {
+        /* 현재 인증된 사용자의 인증 토큰을 가져온다.*/
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(reportService.reportBoard(authentication, boardId, requestDTO, "거래신고"));
+
+    }
 }
+

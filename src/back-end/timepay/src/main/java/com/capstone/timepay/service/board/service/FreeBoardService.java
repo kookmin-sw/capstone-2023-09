@@ -2,12 +2,12 @@ package com.capstone.timepay.service.board.service;
 
 import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
-import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
-import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
-import com.capstone.timepay.domain.freeBoardComment.FreeBoardCommentRepository;
+import com.capstone.timepay.domain.freeRegister.FreeRegister;
+import com.capstone.timepay.domain.freeRegister.FreeRegisterRepository;
 import com.capstone.timepay.domain.user.User;
+import com.capstone.timepay.domain.user.UserRepository;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,13 +28,15 @@ public class FreeBoardService
 {
     private final FreeBoardRepository freeBoardRepository;
     private final BoardRepository boardRepository;
+    private final FreeRegisterRepository freeRegisterRepository;
+    private final UserRepository userRepository;
 
     public FreeBoard getId(Long id)
     {
         return freeBoardRepository.findById(id).orElse(null);
     }
 
-    // 모든 게시물 조회 (숨김처리 안된 게시판만 조회, hidden이라는 쿼리로 판단)
+    // 모든 게시물 조회
     @Transactional
     public Page<FreeBoardDTO> getBoards(int pagingIndex, int pagingSize)
     {
@@ -60,28 +61,32 @@ public class FreeBoardService
 
     // 게시물 작성
     @Transactional
-    public FreeBoardDTO write(FreeBoardDTO freeBoardDTO)
+    public FreeBoardDTO write(FreeBoardDTO freeBoardDTO, String email)
     {
-        FreeBoard freeBoard = new FreeBoard();
-        freeBoard.setTitle(freeBoardDTO.getTitle());
-        freeBoard.setContent(freeBoardDTO.getContent());
-        freeBoard.setCategory(freeBoardDTO.getCategory());
-        freeBoard.setCreatedAt(LocalDateTime.now());
-        freeBoard.setUpdatedAt(LocalDateTime.now());
-        freeBoard.setHidden(freeBoardDTO.isHidden());
-        // TODO: uuid 정보는 숨겨야하지 않을까
-        freeBoard.setUuid(freeBoardDTO.getUuid());
-        freeBoardRepository.save(freeBoard);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            return new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
+        });
+        FreeBoard freeBoard = FreeBoard.builder()
+                .title(freeBoardDTO.getTitle())
+                .content(freeBoardDTO.getContent())
+                .category(freeBoardDTO.getCategory())
+                .isHidden(freeBoardDTO.isHidden())
+                .build();
 
-        /**
-         Board를 통해 한꺼번에 조회할 수 있도록 추가
-         */
-        Board board = new Board();
-        board.setBoardStatus(BoardStatus.FREE_BOARD);
-        board.setUuid(freeBoardDTO.getUuid());
-        board.setTitle(freeBoardDTO.getTitle());
-        board.setCategory("free");
+        Board board = Board.builder().
+                freeBoard(freeBoard).
+                dealBoard(null).
+                build();
         boardRepository.save(board);
+
+        FreeRegister freeRegister = FreeRegister.builder().
+                f_registerId(freeBoard.getF_boardId()).
+                freeBoard(freeBoard).
+                user(user).
+                build();
+        freeRegisterRepository.save(freeRegister);
+
+
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }
 
@@ -92,18 +97,12 @@ public class FreeBoardService
         FreeBoard freeBoard = freeBoardRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다.");
         });
-        freeBoard.setTitle(freeBoardDTO.getTitle());
-        freeBoard.setContent(freeBoardDTO.getContent());
-        freeBoard.setCategory(freeBoardDTO.getCategory());
-        freeBoard.setUpdatedAt(LocalDateTime.now());
-        freeBoard.setHidden(freeBoardDTO.isHidden());
-
-        /**
-         Board를 통해 한꺼번에 조회할 수 있도록 추가
-         */
-        Board board = new Board();
-        board.setBoardStatus(BoardStatus.FREE_BOARD);
-        board.setTitle(freeBoardDTO.getTitle());
+        freeBoard = FreeBoard.builder()
+                .title(freeBoardDTO.getTitle())
+                .content(freeBoardDTO.getContent())
+                .category(freeBoardDTO.getCategory())
+                .isHidden(freeBoardDTO.isHidden())
+                .build();
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }
 

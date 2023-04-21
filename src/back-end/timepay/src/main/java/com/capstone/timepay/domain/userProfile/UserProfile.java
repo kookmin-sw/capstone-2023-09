@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 public class UserProfile extends BaseTimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long profileId;
 
     @Column
@@ -22,5 +22,4 @@ public class UserProfile extends BaseTimeEntity {
     private String imageUrl;
     private String introduction;
     private int timepay;
-    private Long uid;
 }

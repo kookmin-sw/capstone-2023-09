@@ -24,17 +24,21 @@ public class FreeBoardComment extends BaseTimeEntity {
 
     @Column // (nullable = false)
     private String content;
-    private Long uuid;
+    private boolean isHidden;
 
-    @OneToMany(mappedBy = "freeBoardComment", orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoardComment", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<FreeCommentReport> freeCommentReports = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="f_boardId")
     private FreeBoard freeBoard;
    
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
+
+    public void updateIsHidden(boolean isHidden){
+        this.isHidden = isHidden;
+    }
 
 }

@@ -5,6 +5,10 @@ import com.capstone.timepay.domain.board.BoardRepository;
 import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.domain.dealBoard.DealBoardRepository;
+import com.capstone.timepay.domain.dealRegister.DealRegister;
+import com.capstone.timepay.domain.dealRegister.DealRegisterRepository;
+import com.capstone.timepay.domain.user.User;
+import com.capstone.timepay.domain.user.UserRepository;
 import com.capstone.timepay.service.board.dto.DealBoardDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +29,8 @@ public class DealBoardService
 {
     private final DealBoardRepository dealBoardRepository;
     private final BoardRepository boardRepository;
+    private final DealRegisterRepository dealRegisterRepository;
+    private final UserRepository userRepository;
 
     public DealBoard getId(Long id)
     {
@@ -54,36 +60,63 @@ public class DealBoardService
         return dealBoardDTO;
     }
 
+    // 도움주기 게시물 조회
+    @Transactional(readOnly = true)
+    public Page<DealBoardDTO> getHelperDealBoard(int pagingIndex, int paingSize)
+    {
+        Pageable pageable = PageRequest.of(pagingIndex, paingSize);
+        Page<DealBoard> dealBoardPage = dealBoardRepository.findByCategory(pageable, "helper");
+        List<DealBoardDTO> dealBoardDTOList = dealBoardPage.stream()
+                .map(DealBoardDTO::toDealBoardDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dealBoardDTOList, dealBoardPage.getPageable(), dealBoardPage.getTotalElements());
+    }
+
+    // 도움받기 게시물 조회
+    @Transactional(readOnly = true)
+    public Page<DealBoardDTO> getHelpDealBoard(int pagingIndex, int paingSize)
+    {
+        Pageable pageable = PageRequest.of(pagingIndex, paingSize);
+        Page<DealBoard> dealBoardPage = dealBoardRepository.findByCategory(pageable, "help");
+        List<DealBoardDTO> dealBoardDTOList = dealBoardPage.stream()
+                .map(DealBoardDTO::toDealBoardDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dealBoardDTOList, dealBoardPage.getPageable(), dealBoardPage.getTotalElements());
+    }
+
     // 게시물 작성
     @Transactional
-    public DealBoardDTO write(DealBoardDTO dealBoardDTO)
+    public DealBoardDTO write(DealBoardDTO dealBoardDTO, String email, String category)
     {
-        DealBoard dealBoard = new DealBoard();
-        dealBoard.setTitle(dealBoardDTO.getTitle());
-        dealBoard.setState(dealBoardDTO.getState());
-        dealBoard.setContent(dealBoardDTO.getContent());
-        dealBoard.setCategory(dealBoardDTO.getCategory());
-        dealBoard.setLocation(dealBoardDTO.getLocation());
-        dealBoard.setStartTime(dealBoardDTO.getStartTime());
-        dealBoard.setEndTime(dealBoardDTO.getEndTime());
-        dealBoard.setPay(dealBoardDTO.getPay());
-        dealBoard.setCreatedAt(LocalDateTime.now());
-        dealBoard.setUpdatedAt(LocalDateTime.now());
-        dealBoard.setHidden(dealBoardDTO.isHidden());
-        dealBoard.setUuid(dealBoardDTO.getUuid());
-        dealBoard.setBoardStatus(BoardStatus.MATCHING_IN_PROGRESS);
-        dealBoardRepository.save(dealBoard);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> {
+            return new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
+        });
 
-        /**
-         Board를 통해 한꺼번에 조회할 수 있도록 추가
-         */
-        Board board = new Board();
-        board.setBoardStatus(BoardStatus.MATCHING_IN_PROGRESS);
-        board.setUuid(dealBoardDTO.getUuid());
-        board.setTitle(dealBoardDTO.getTitle());
-        board.setTimePay(dealBoardDTO.getPay());
-        board.setCategory("deal");
+        DealBoard dealBoard = DealBoard.builder()
+                .title(dealBoardDTO.getTitle())
+                .state(dealBoardDTO.getState())
+                .content(dealBoardDTO.getContent())
+                .category(category)
+                .location(dealBoardDTO.getLocation())
+                .startTime(dealBoardDTO.getEndTime())
+                .pay(dealBoardDTO.getPay())
+                .isHidden(dealBoardDTO.isHidden())
+                .build();
+
+        Board board = Board.builder().
+                freeBoard(null).
+                dealBoard(dealBoard).
+                build();
         boardRepository.save(board);
+
+        DealRegister dealRegister = DealRegister.builder()
+                .d_registerId(dealBoard.getD_boardId())
+                .dealBoard(dealBoard)
+                .user(user)
+               .build();
+               dealRegisterRepository.save(dealRegister);
+
+        dealBoardRepository.save(dealBoard);
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 
@@ -94,24 +127,29 @@ public class DealBoardService
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
 
-        dealBoard.setTitle(boardDto.getTitle());
-        dealBoard.setContent(boardDto.getContent());
-        dealBoard.setState(boardDto.getState());
-        dealBoard.setCategory(boardDto.getCategory());
-        dealBoard.setLocation(boardDto.getLocation());
-        dealBoard.setStartTime(boardDto.getStartTime());
-        dealBoard.setEndTime(boardDto.getEndTime());
-        dealBoard.setPay(boardDto.getPay());
-        dealBoard.setHidden(boardDto.isHidden());
+        dealBoard = DealBoard.builder()
+                .title(boardDto.getTitle())
+                .state(boardDto.getState())
+                .content(boardDto.getContent())
+                .category(boardDto.getCategory())
+                .location(boardDto.getLocation())
+                .startTime(boardDto.getEndTime())
+                .pay(boardDto.getPay())
+                .isHidden(boardDto.isHidden())
+                .build();
 
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 
     @Transactional
     public void delete(Long id) {
+        // 매개변수 id를 기반으로, 게시글이 존재하는지 먼저 찾음
+        // 게시글이 없으면 오류 처리
         DealBoard dealBoard = dealBoardRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다!");
         });
+
+        // 게시글이 있는 경우 삭제처리
         dealBoardRepository.deleteById(id);
     }
 
@@ -121,7 +159,10 @@ public class DealBoardService
         DealBoard dealBoard = dealBoardRepository.findById(boardId).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
-        dealBoard.setBoardStatus(BoardStatus.MATCHING_COMPLETE);
+
+        dealBoard = DealBoard.builder()
+                .boardStatus(BoardStatus.MATCHING_COMPLETE)
+                .build();
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 }

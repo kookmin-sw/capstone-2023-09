@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Entity
 public class DealBoard extends BaseTimeEntity {
     @Id
@@ -34,18 +33,18 @@ public class DealBoard extends BaseTimeEntity {
     @Lob
     @Column(nullable = false)
     private String content;
+    private String type;
     private String category;
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int pay;
-    private Long uuid;
 
     // 숨김처리
     @Column
     private boolean isHidden;
 
-    private BoardStatus boardStatus; // 현재 게시판의 활동중인지 매칭중인지 판단
+    private BoardStatus boardStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -60,6 +59,6 @@ public class DealBoard extends BaseTimeEntity {
     @OneToMany(mappedBy = "dealBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealRegister> dealRegisters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealBoardReport> dealBoardReports = new ArrayList<>();
 }

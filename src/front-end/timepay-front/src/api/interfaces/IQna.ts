@@ -22,6 +22,7 @@ export interface IGetQna {
   content: string;
   notice: boolean;
   title: string;
+  createdAt: string;
 }
 
 export type IQnaState = '답변대기' | '답변완료';

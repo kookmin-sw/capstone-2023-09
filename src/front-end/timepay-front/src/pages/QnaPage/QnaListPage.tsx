@@ -199,7 +199,7 @@ const QnaListPage = () => {
         <BackArrow onClick={handleClickBack} />
         <span>문의하기</span>
       </div>
-      <Link to="/qna/register">
+      <Link to="/inquire/register">
         <FloatButton
           shape="circle"
           type="primary"

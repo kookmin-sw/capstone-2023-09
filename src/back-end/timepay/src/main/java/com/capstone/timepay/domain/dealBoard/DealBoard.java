@@ -1,16 +1,13 @@
 package com.capstone.timepay.domain.dealBoard;
 
 import com.capstone.timepay.domain.BaseTimeEntity;
+import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.dealAttatchment.DealAttatchment;
 import com.capstone.timepay.domain.dealBoardComment.DealBoardComment;
 import com.capstone.timepay.domain.dealBoardReport.DealBoardReport;
-import com.capstone.timepay.domain.dealCommentReport.DealCommentReport;
 import com.capstone.timepay.domain.dealRegister.DealRegister;
-import com.capstone.timepay.domain.notification.Notification;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.capstone.timepay.domain.user.User;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,28 +21,44 @@ import java.util.List;
 @Entity
 public class DealBoard extends BaseTimeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long d_boardId;
 
-    @Column
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String state;
+
+    @Lob
+    @Column(nullable = false)
     private String content;
+    private String type;
     private String category;
     private String location;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private int pay;
 
-    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true)
+    // 숨김처리
+    @Column
+    private boolean isHidden;
+
+    private BoardStatus boardStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealBoardComment> dealBoardComments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealAttatchment> dealAttatchments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealRegister> dealRegisters = new ArrayList<>();
 
-    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true)
+    @OneToMany(mappedBy = "dealBoard", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DealBoardReport> dealBoardReports = new ArrayList<>();
 }

@@ -22,12 +22,19 @@ public class DealBoardReport extends BaseTimeEntity {
 
     @Column
     private String content;
+    private String process;
 
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="d_board_id")
+    @JoinColumn(name="deal_board_id")
     private DealBoard dealBoard;
+
+    public DealBoardReport(User user, String content, DealBoard dealBoard){
+        this.user = user;
+        this.content = content;
+        this.dealBoard = dealBoard;
+    }
 }

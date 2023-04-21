@@ -21,10 +21,11 @@ public class FreeRegister extends BaseTimeEntity {
     private Long f_registerId;
 
     @ManyToOne
-    @JoinColumn(name="f_board_id")
+    @JoinColumn(name="free_board_id")
     private FreeBoard freeBoard;
 
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
+
 }

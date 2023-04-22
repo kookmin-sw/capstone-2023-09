@@ -25,6 +25,8 @@ public class FreeBoardCommentService {
     private final FreeBoardRepository freeBoardRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final FreeBoardService freeBoardService;
+
     // 댓글 작성
     @Transactional
     public FreeBoardCommentDTO writeComment(Long boardId, FreeBoardCommentDTO freeBoardCommentDTO, String email)
@@ -41,6 +43,8 @@ public class FreeBoardCommentService {
                 .user(user)
                 .build();
         freeBoardCommentRepository.save(freeBoardComment);
+
+        freeBoardService.insertComment(boardId, freeBoardComment);
 
         Comment comment = Comment.builder().
                 freeBoardComment(freeBoardComment).

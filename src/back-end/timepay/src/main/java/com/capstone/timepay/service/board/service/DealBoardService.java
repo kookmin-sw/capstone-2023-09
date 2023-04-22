@@ -153,15 +153,24 @@ public class DealBoardService
     }
 
     @Transactional
-    public DealBoardDTO modifyStatus(Long boardId, DealBoardDTO boardDto)
+    public DealBoardDTO modifyMatchingFinish(Long boardId)
     {
         DealBoard dealBoard = dealBoardRepository.findById(boardId).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
 
-        dealBoard = DealBoard.builder()
-                .boardStatus(BoardStatus.MATCHING_COMPLETE)
-                .build();
+        dealBoard.setBoardStatus(BoardStatus.MATCHING_COMPLETE);
+        return DealBoardDTO.toDealBoardDTO(dealBoard);
+    }
+
+    @Transactional
+    public DealBoardDTO modifyActivityFinsih(Long boardId)
+    {
+        DealBoard dealBoard = dealBoardRepository.findById(boardId).orElseThrow(() -> {
+            return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
+        });
+
+        dealBoard.setBoardStatus(BoardStatus.ACTIVITY_COMPLETE);
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 }

@@ -4,6 +4,7 @@ import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
+import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
 import com.capstone.timepay.domain.freeRegister.FreeRegister;
 import com.capstone.timepay.domain.freeRegister.FreeRegisterRepository;
 import com.capstone.timepay.domain.user.User;
@@ -113,5 +114,12 @@ public class FreeBoardService
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다!");
         });
         freeBoardRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void insertComment(Long boardId, FreeBoardComment freeBoardComment)
+    {
+        FreeBoard freeBoard = freeBoardRepository.findById(boardId).orElse(null);
+        freeBoard.getFreeBoardComments().add(freeBoardComment);
     }
 }

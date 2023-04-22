@@ -2,6 +2,7 @@ package com.capstone.timepay.controller.board;
 
 
 import com.capstone.timepay.controller.board.request.ReportRequestDTO;
+import com.capstone.timepay.domain.freeAttatchment.FreeAttatchment;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
 import com.capstone.timepay.service.board.service.FreeBoardService;
 import com.capstone.timepay.service.board.service.ReportService;
@@ -17,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -63,10 +66,12 @@ public class FreeBoardController {
 
 
     @ApiOperation(value = "자유게시글 작성")
-    @PostMapping("/write")
-    public ResponseEntity write(@RequestBody FreeBoardDTO freeBoardDTO, Principal principal)
+    @PostMapping(value = "/write", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity write(@RequestBody FreeBoardDTO freeBoardDTO,
+                                @RequestPart List<FreeAttatchment> images,
+                                Principal principal) throws Exception
     {
-        return new ResponseEntity(freeBoardService.write(freeBoardDTO, principal.getName()), HttpStatus.CREATED);
+        return new ResponseEntity(freeBoardService.write(freeBoardDTO, principal.getName(), images), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "자유게시글 수정")

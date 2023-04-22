@@ -2,6 +2,7 @@ package com.capstone.timepay.service.board.service;
 
 import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
+import com.capstone.timepay.domain.freeAttatchment.FreeAttatchment;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
@@ -9,7 +10,9 @@ import com.capstone.timepay.domain.freeRegister.FreeRegister;
 import com.capstone.timepay.domain.freeRegister.FreeRegisterRepository;
 import com.capstone.timepay.domain.user.User;
 import com.capstone.timepay.domain.user.UserRepository;
+import com.capstone.timepay.firebase.FirebaseService;
 import com.capstone.timepay.service.board.dto.FreeBoardDTO;
+import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class FreeBoardService
     private final BoardRepository boardRepository;
     private final FreeRegisterRepository freeRegisterRepository;
     private final UserRepository userRepository;
+    private final FirebaseService firebaseService;
 
     public FreeBoard getId(Long id)
     {
@@ -62,7 +67,9 @@ public class FreeBoardService
 
     // 게시물 작성
     @Transactional
-    public FreeBoardDTO write(FreeBoardDTO freeBoardDTO, String email)
+    public FreeBoardDTO write(FreeBoardDTO freeBoardDTO,
+                              String email,
+                              List<FreeAttatchment> images) throws IOException, FirebaseAuthException
     {
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             return new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");

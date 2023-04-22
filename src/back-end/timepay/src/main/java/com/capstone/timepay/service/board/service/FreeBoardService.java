@@ -72,6 +72,7 @@ public class FreeBoardService
                 .category(freeBoardDTO.getCategory())
                 .isHidden(freeBoardDTO.isHidden())
                 .build();
+        freeBoardRepository.save(freeBoard);
 
         Board board = Board.builder().
                 freeBoard(freeBoard).

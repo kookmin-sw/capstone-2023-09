@@ -75,19 +75,16 @@ public class FreeBoardService
                 .build();
         freeBoardRepository.save(freeBoard);
 
-        Board board = Board.builder().
-                freeBoard(freeBoard).
-                dealBoard(null).
-                build();
+        Board board = new Board();
+        board.setFreeBoard(freeBoard);
+        board.setDealBoard(null);
         boardRepository.save(board);
 
-        FreeRegister freeRegister = FreeRegister.builder().
-                f_registerId(freeBoard.getF_boardId()).
-                freeBoard(freeBoard).
-                user(user).
-                build();
+        FreeRegister freeRegister = new FreeRegister();
+        freeRegister.setF_registerId(freeBoard.getF_boardId());
+        freeRegister.setFreeBoard(freeBoard);
+        freeRegister.setUser(user);
         freeRegisterRepository.save(freeRegister);
-
 
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }

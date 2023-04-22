@@ -5,10 +5,7 @@ import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.user.User;
 import com.capstone.timepay.domain.userProfile.UserProfile;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Board extends BaseTimeEntity {
 

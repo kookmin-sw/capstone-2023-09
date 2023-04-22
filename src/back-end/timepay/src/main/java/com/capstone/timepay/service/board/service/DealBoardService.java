@@ -2,14 +2,11 @@ package com.capstone.timepay.service.board.service;
 
 import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
-import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.domain.dealBoard.DealBoardRepository;
 import com.capstone.timepay.domain.dealBoardComment.DealBoardComment;
 import com.capstone.timepay.domain.dealRegister.DealRegister;
 import com.capstone.timepay.domain.dealRegister.DealRegisterRepository;
-import com.capstone.timepay.domain.freeBoard.FreeBoard;
-import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
 import com.capstone.timepay.domain.user.User;
 import com.capstone.timepay.domain.user.UserRepository;
 import com.capstone.timepay.service.board.dto.DealBoardDTO;
@@ -21,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,9 +92,9 @@ public class DealBoardService
 
         DealBoard dealBoard = DealBoard.builder()
                 .title(dealBoardDTO.getTitle())
-                .state(dealBoardDTO.getState())
                 .content(dealBoardDTO.getContent())
                 .category(category)
+                .state("매칭중")
                 .location(dealBoardDTO.getLocation())
                 .startTime(dealBoardDTO.getStartTime())
                 .endTime(dealBoardDTO.getEndTime())
@@ -131,7 +126,6 @@ public class DealBoardService
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
         dealBoard.setTitle(boardDto.getTitle());
-        dealBoard.setState(boardDto.getState());
         dealBoard.setContent(boardDto.getContent());
         dealBoard.setCategory(boardDto.getCategory());
         dealBoard.setLocation(boardDto.getLocation());
@@ -162,7 +156,7 @@ public class DealBoardService
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
 
-        dealBoard.setBoardStatus(BoardStatus.MATCHING_COMPLETE);
+        dealBoard.setState("활동중");
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 
@@ -173,7 +167,7 @@ public class DealBoardService
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
 
-        dealBoard.setBoardStatus(BoardStatus.ACTIVITY_COMPLETE);
+        dealBoard.setState("활동완료");
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }
 

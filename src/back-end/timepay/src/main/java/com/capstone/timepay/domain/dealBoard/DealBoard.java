@@ -1,7 +1,6 @@
 package com.capstone.timepay.domain.dealBoard;
 
 import com.capstone.timepay.domain.BaseTimeEntity;
-import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.dealAttatchment.DealAttatchment;
 import com.capstone.timepay.domain.dealBoardComment.DealBoardComment;
 import com.capstone.timepay.domain.dealBoardReport.DealBoardReport;
@@ -44,8 +43,6 @@ public class DealBoard extends BaseTimeEntity {
     // 숨김처리
     @Column
     private boolean isHidden;
-
-    private BoardStatus boardStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

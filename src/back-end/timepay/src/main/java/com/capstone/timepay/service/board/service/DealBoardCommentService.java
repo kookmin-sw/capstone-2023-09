@@ -37,8 +37,8 @@ public class DealBoardCommentService {
         DealBoardComment dealBoardComment = DealBoardComment.builder()
                 .content(dealBoardCommentDTO.getContent())
                 .isHidden(dealBoardCommentDTO.isHidden())
-                .isApplied(false)
-                .isApplied(false)
+                .isAdopted(false)
+                .isApplied(dealBoardCommentDTO.isApplied())
                 .user(user)
                 .dealBoard(dealBoard)
                 .build();

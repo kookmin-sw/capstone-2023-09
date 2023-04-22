@@ -25,6 +25,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -67,8 +68,8 @@ public class FreeBoardController {
 
     @ApiOperation(value = "자유게시글 작성")
     @PostMapping(value = "/write", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity write(@RequestBody FreeBoardDTO freeBoardDTO,
-                                @RequestPart List<FreeAttatchment> images,
+    public ResponseEntity write(@RequestPart FreeBoardDTO freeBoardDTO,
+                                @RequestPart List<MultipartFile> images,
                                 Principal principal) throws Exception
     {
         return new ResponseEntity(freeBoardService.write(freeBoardDTO, principal.getName(), images), HttpStatus.CREATED);

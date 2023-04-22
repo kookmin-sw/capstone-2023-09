@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.Authentication;
@@ -22,9 +23,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -89,17 +92,21 @@ public class DealBoardController
     }
 
     @ApiOperation(value = "거래게시판 도움주기 게시글 작성")
-    @PostMapping("/write/helper")
-    public ResponseEntity helperWrite(@RequestBody DealBoardDTO dealBoardDTO, Principal principal)
+    @PostMapping(value = "/write/helper", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity helperWrite(@RequestPart DealBoardDTO dealBoardDTO,
+                                      @RequestPart List<MultipartFile> images,
+                                      Principal principal) throws Exception
     {
-        return new ResponseEntity(dealBoardService.write(dealBoardDTO, principal.getName(), "helper"), HttpStatus.OK);
+        return new ResponseEntity(dealBoardService.write(dealBoardDTO, principal.getName(), "helper", images), HttpStatus.OK);
     }
 
     @ApiOperation(value = "거래게시판 도움받기 게시글 작성")
-    @PostMapping("/write/help")
-    public ResponseEntity getHelpWrite(@RequestBody DealBoardDTO dealBoardDTO, Principal principal)
+    @PostMapping(value = "/write/help", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity getHelpWrite(@RequestPart DealBoardDTO dealBoardDTO,
+                                       @RequestPart List<MultipartFile> images,
+                                       Principal principal) throws Exception
     {
-        return new ResponseEntity(dealBoardService.write(dealBoardDTO, principal.getName(), "help"), HttpStatus.OK);
+        return new ResponseEntity(dealBoardService.write(dealBoardDTO, principal.getName(), "help", images), HttpStatus.OK);
     }
 
     @ApiOperation(value = "거래게시판 게시글 수정")

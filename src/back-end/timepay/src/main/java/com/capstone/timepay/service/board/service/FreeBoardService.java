@@ -3,6 +3,7 @@ package com.capstone.timepay.service.board.service;
 import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
 import com.capstone.timepay.domain.freeAttatchment.FreeAttatchment;
+import com.capstone.timepay.domain.freeAttatchment.FreeAttatchmentRepository;
 import com.capstone.timepay.domain.freeBoard.FreeBoard;
 import com.capstone.timepay.domain.freeBoard.FreeBoardRepository;
 import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -36,6 +38,7 @@ public class FreeBoardService
     private final FreeRegisterRepository freeRegisterRepository;
     private final UserRepository userRepository;
     private final FirebaseService firebaseService;
+    private final FreeAttatchmentRepository freeAttatchmentRepository;
 
     public FreeBoard getId(Long id)
     {
@@ -69,16 +72,29 @@ public class FreeBoardService
     @Transactional
     public FreeBoardDTO write(FreeBoardDTO freeBoardDTO,
                               String email,
-                              List<FreeAttatchment> images) throws IOException, FirebaseAuthException
+                              List<MultipartFile> images) throws IOException, FirebaseAuthException
     {
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             return new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
         });
+
+        List<FreeAttatchment> freeAttatchments = new ArrayList<>();
+        for (MultipartFile image : images)
+        {
+            String imageUrl = firebaseService.uploadFiles(image);
+            FreeAttatchment freeAttatchment = FreeAttatchment.builder()
+                    .imageUrl(imageUrl)
+                    .build();
+            freeAttatchments.add(freeAttatchment);
+            freeAttatchmentRepository.save(freeAttatchment);
+        }
+
         FreeBoard freeBoard = FreeBoard.builder()
                 .title(freeBoardDTO.getTitle())
                 .content(freeBoardDTO.getContent())
                 .category(freeBoardDTO.getCategory())
                 .isHidden(freeBoardDTO.isHidden())
+                .freeAttatchments(freeAttatchments)
                 .build();
         freeBoardRepository.save(freeBoard);
 

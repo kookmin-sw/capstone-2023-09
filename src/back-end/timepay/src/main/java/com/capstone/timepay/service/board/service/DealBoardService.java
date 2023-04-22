@@ -2,14 +2,19 @@ package com.capstone.timepay.service.board.service;
 
 import com.capstone.timepay.domain.board.Board;
 import com.capstone.timepay.domain.board.BoardRepository;
+import com.capstone.timepay.domain.dealAttatchment.DealAttatchment;
+import com.capstone.timepay.domain.dealAttatchment.DealAttatchmentRepository;
 import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.domain.dealBoard.DealBoardRepository;
 import com.capstone.timepay.domain.dealBoardComment.DealBoardComment;
 import com.capstone.timepay.domain.dealRegister.DealRegister;
 import com.capstone.timepay.domain.dealRegister.DealRegisterRepository;
+import com.capstone.timepay.domain.freeAttatchment.FreeAttatchment;
 import com.capstone.timepay.domain.user.User;
 import com.capstone.timepay.domain.user.UserRepository;
+import com.capstone.timepay.firebase.FirebaseService;
 import com.capstone.timepay.service.board.dto.DealBoardDTO;
+import com.google.firebase.auth.FirebaseAuthException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,7 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +37,8 @@ public class DealBoardService
     private final BoardRepository boardRepository;
     private final DealRegisterRepository dealRegisterRepository;
     private final UserRepository userRepository;
+    private final FirebaseService firebaseService;
+    private final DealAttatchmentRepository dealAttatchmentRepository;
 
     public DealBoard getId(Long id)
     {
@@ -84,11 +94,23 @@ public class DealBoardService
 
     // 게시물 작성
     @Transactional
-    public DealBoardDTO write(DealBoardDTO dealBoardDTO, String email, String category)
+    public DealBoardDTO write(DealBoardDTO dealBoardDTO, String email, String category,
+                              List<MultipartFile> images) throws IOException, FirebaseAuthException
     {
         User user = userRepository.findByEmail(email).orElseThrow(() -> {
             return new IllegalArgumentException("해당 유저를 찾을 수 없습니다.");
         });
+
+        List<DealAttatchment> dealAttatchments = new ArrayList<>();
+        for (MultipartFile image : images)
+        {
+            String imageUrl = firebaseService.uploadFiles(image);
+            DealAttatchment dealAttatchment = DealAttatchment.builder()
+                    .imageUrl(imageUrl)
+                    .build();
+            dealAttatchments.add(dealAttatchment);
+            dealAttatchmentRepository.save(dealAttatchment);
+        }
 
         DealBoard dealBoard = DealBoard.builder()
                 .title(dealBoardDTO.getTitle())
@@ -100,6 +122,7 @@ public class DealBoardService
                 .endTime(dealBoardDTO.getEndTime())
                 .pay(dealBoardDTO.getPay())
                 .isHidden(dealBoardDTO.isHidden())
+                .dealAttatchments(dealAttatchments)
                 .build();
 
         Board board = Board.builder().

@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class DealBoardCommentService {
     private final DealBoardRepository dealBoardRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final DealBoardService dealBoardService;
     // 댓글 작성하기
     @Transactional
     public DealBoardCommentDTO writeComment(Long boardId, DealBoardCommentDTO dealBoardCommentDTO,
@@ -42,6 +44,7 @@ public class DealBoardCommentService {
                 .user(user)
                 .dealBoard(dealBoard)
                 .build();
+        dealBoardService.insertComment(boardId, dealBoardComment);
 
         Comment comment = Comment.builder().
                 freeBoardComment(null).
@@ -85,5 +88,13 @@ public class DealBoardCommentService {
         DealBoardComment dealBoardComment = dealBoardCommentRepository.findById(commentId).orElse(null);
         User user = dealBoardComment.getUser();
         return user.getEmail();
+    }
+
+    public List<DealBoardComment> getAppliedComments(Long boardId) {
+        DealBoard dealBoard = dealBoardRepository.findById(boardId).orElse(null);
+        List<DealBoardComment> appliedComments = dealBoard.getDealBoardComments().stream()
+                .filter(comment -> comment.isApplied())
+                .collect(Collectors.toList());
+        return appliedComments;
     }
 }

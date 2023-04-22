@@ -5,8 +5,11 @@ import com.capstone.timepay.domain.board.BoardRepository;
 import com.capstone.timepay.domain.board.BoardStatus;
 import com.capstone.timepay.domain.dealBoard.DealBoard;
 import com.capstone.timepay.domain.dealBoard.DealBoardRepository;
+import com.capstone.timepay.domain.dealBoardComment.DealBoardComment;
 import com.capstone.timepay.domain.dealRegister.DealRegister;
 import com.capstone.timepay.domain.dealRegister.DealRegisterRepository;
+import com.capstone.timepay.domain.freeBoard.FreeBoard;
+import com.capstone.timepay.domain.freeBoardComment.FreeBoardComment;
 import com.capstone.timepay.domain.user.User;
 import com.capstone.timepay.domain.user.UserRepository;
 import com.capstone.timepay.service.board.dto.DealBoardDTO;
@@ -172,5 +175,12 @@ public class DealBoardService
 
         dealBoard.setBoardStatus(BoardStatus.ACTIVITY_COMPLETE);
         return DealBoardDTO.toDealBoardDTO(dealBoard);
+    }
+
+    @Transactional
+    public void insertComment(Long boardId, DealBoardComment dealBoardComment)
+    {
+        DealBoard dealBoard = dealBoardRepository.findById(boardId).orElse(null);
+        dealBoard.getDealBoardComments().add(dealBoardComment);
     }
 }

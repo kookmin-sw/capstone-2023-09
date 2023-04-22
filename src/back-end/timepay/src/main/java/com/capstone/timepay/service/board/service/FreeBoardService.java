@@ -98,12 +98,10 @@ public class FreeBoardService
         FreeBoard freeBoard = freeBoardRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다.");
         });
-        freeBoard = FreeBoard.builder()
-                .title(freeBoardDTO.getTitle())
-                .content(freeBoardDTO.getContent())
-                .category(freeBoardDTO.getCategory())
-                .isHidden(freeBoardDTO.isHidden())
-                .build();
+        freeBoard.setTitle(freeBoardDTO.getTitle());
+        freeBoard.setContent(freeBoardDTO.getContent());
+        freeBoard.setCategory(freeBoardDTO.getCategory());
+        freeBoard.setHidden(freeBoardDTO.isHidden());
         return FreeBoardDTO.toFreeBoardDTO(freeBoard);
     }
 

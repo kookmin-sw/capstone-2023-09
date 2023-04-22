@@ -20,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @Entity
 @Builder
 public class FreeBoard extends BaseTimeEntity

@@ -98,7 +98,8 @@ public class DealBoardService
                 .content(dealBoardDTO.getContent())
                 .category(category)
                 .location(dealBoardDTO.getLocation())
-                .startTime(dealBoardDTO.getEndTime())
+                .startTime(dealBoardDTO.getStartTime())
+                .endTime(dealBoardDTO.getEndTime())
                 .pay(dealBoardDTO.getPay())
                 .isHidden(dealBoardDTO.isHidden())
                 .build();
@@ -126,17 +127,15 @@ public class DealBoardService
         DealBoard dealBoard = dealBoardRepository.findById(id).orElseThrow(() -> {
             return new IllegalArgumentException("Board Id를 찾을 수 없습니다");
         });
-
-        dealBoard = DealBoard.builder()
-                .title(boardDto.getTitle())
-                .state(boardDto.getState())
-                .content(boardDto.getContent())
-                .category(boardDto.getCategory())
-                .location(boardDto.getLocation())
-                .startTime(boardDto.getEndTime())
-                .pay(boardDto.getPay())
-                .isHidden(boardDto.isHidden())
-                .build();
+        dealBoard.setTitle(boardDto.getTitle());
+        dealBoard.setState(boardDto.getState());
+        dealBoard.setContent(boardDto.getContent());
+        dealBoard.setCategory(boardDto.getCategory());
+        dealBoard.setLocation(boardDto.getLocation());
+        dealBoard.setStartTime(boardDto.getStartTime());
+        dealBoard.setEndTime(boardDto.getEndTime());
+        dealBoard.setPay(boardDto.getPay());
+        dealBoard.setHidden(boardDto.isHidden());
 
         return DealBoardDTO.toDealBoardDTO(dealBoard);
     }

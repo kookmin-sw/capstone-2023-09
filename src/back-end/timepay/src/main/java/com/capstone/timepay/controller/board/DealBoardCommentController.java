@@ -95,7 +95,7 @@ public class DealBoardCommentController {
 
     @ApiOperation(value = "현재 게시판에서 지원한 사람들의 목록 가져오기")
     @GetMapping("/{boardId}/applied")
-    public List<DealBoardComment> getAppliedComments(@PathVariable("boardId") Long boardId) {
+    public List<DealBoardCommentDTO> getAppliedComments(@PathVariable("boardId") Long boardId) {
         return dealBoardCommentService.getAppliedComments(boardId);
     }
 }

@@ -90,11 +90,10 @@ public class DealBoardCommentService {
         return user.getEmail();
     }
 
-    public List<DealBoardComment> getAppliedComments(Long boardId) {
-        DealBoard dealBoard = dealBoardRepository.findById(boardId).orElse(null);
-        List<DealBoardComment> appliedComments = dealBoard.getDealBoardComments().stream()
-                .filter(comment -> comment.isApplied())
-                .collect(Collectors.toList());
-        return appliedComments;
+    public List<DealBoardCommentDTO> getAppliedComments(Long boardId) {
+        DealBoard dealBoard = dealBoardRepository.findById(boardId).get();
+        List<DealBoardComment> comments = dealBoardCommentRepository.findAllByDealBoardAndIsAppliedTrue(dealBoard);
+        return DealBoardCommentDTO.toDealBoardCommentDTOs(comments);
     }
+
 }

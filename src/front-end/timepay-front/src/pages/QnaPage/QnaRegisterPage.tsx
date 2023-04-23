@@ -17,8 +17,6 @@ import ImageUpload from '../../components/register/ImageUpload';
 import { useRecoilState } from 'recoil';
 import { selectedTagsQnaState } from '../../states/register';
 
-import axios from 'axios';
-import { getTokenFromCookie } from '../../utils/token';
 import { useCreateInquiry } from '../../api/hooks/inquiry';
 import { useQueryClient } from 'react-query';
 

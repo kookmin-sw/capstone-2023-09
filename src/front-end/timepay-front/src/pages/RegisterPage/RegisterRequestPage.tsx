@@ -96,7 +96,7 @@ const RegisterRequestPage = () => {
   };
   const handleSubmit = () => {
     axios
-      .post('/api/deal-boards/write', {
+      .post('/api/deal-boards/write/help', {
         category,
         title,
         content,

@@ -13,7 +13,8 @@ import {
   cssPostFooterStyle,
 } from './RegisterFreePage.style';
 
-import axios from 'axios';
+import { useCreateFreeBoards } from '../../api/hooks/register';
+import { useQueryClient } from 'react-query';
 
 const { Header, Content, Footer } = Layout;
 const { TextArea } = Input;
@@ -21,8 +22,13 @@ const { TextArea } = Input;
 const MAX_IMAGES = 5;
 
 const RegisterFreePage = () => {
+  const queryclient = useQueryClient();
+  const useCreateInquiryMutation = useCreateFreeBoards();
+
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const category = 'free';
+  const hidden = true;
   const [images, setImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
@@ -84,52 +90,38 @@ const RegisterFreePage = () => {
     setPreviewUrls(newPreviewUrls);
   };
 
-  const handlePostSubmit = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('content', content);
-      images.forEach((image) => {
-        formData.append('images', image);
-      });
-      await axios.post('/api/posts', formData);
-      alert('게시글 등록 성공!');
-      navigate(PATH.HOME);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleSubmit = () => {
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    images.forEach((image) => formData.append('images', image));
-    axios
-      .post('/api/free-boards/write', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
+    useCreateInquiryMutation.mutateAsync(
+      { title, content, category, hidden },
+      {
+        onSuccess: (data) => {
+          console.log('success');
+          // 새로고침 안해도 값이 추가되면 값이 바로 추가되게 하는 코드. (queryclient 변수와)
+          queryclient.invalidateQueries('');
         },
-      })
-      .then((response) => {
-        console.log('게시글이 등록🤩');
-        navigate(PATH.HOME);
-      })
-      .catch((error) => {
-        console.error('게시글 등록 실패🥹', error);
-      });
-    /* 실행되는 코드!
-      axios
-      .post('/api/free-boards/write', { title, content })
+        onError(error) {
+          console.log('error');
+        },
+        onSettled: (data) => {
+          console.log('dddddd');
+        },
+      },
+    );
+
+    navigate(PATH.HOME);
+
+    /*
+    axios
+      .post('/api/free-boards/write', { title, content, category })
       .then((response) => {
         // 요청이 성공적으로 처리되었을 때 실행될 코드 작성
-        console.log('게시글이 성공적으로 등록되었습니다.');
+        console.log('게시글이 등록 성공');
         // 등록 후에는 홈 화면으로 이동
         navigate(PATH.HOME);
       })
       .catch((error) => {
         // 요청이 실패했을 때 실행될 코드 작성
-        console.error('게시글 등록에 실패했습니다.', error);
+        console.error('게시글 등록 실패', error);
       });
       */
   };

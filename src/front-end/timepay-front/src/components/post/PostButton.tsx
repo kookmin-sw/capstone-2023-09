@@ -78,7 +78,7 @@ const PostButton = () => {
               }}
               className="completed"
             >
-              활동시작
+              활동완료
             </button>
             <button
               css={cssPostButton}

@@ -4,6 +4,7 @@ export const API_URL = {
   FREE_BOARDS_WRITE: '/api/free-boards/write',
   INQUIRY_WRITE: '/api/inquiry-boards/write',
   INQUIRY: 'api/inquiry-boards',
+  USERS_INFO: '/api/users/get/',
 };
 
 // 토큰 필요 없는 애들

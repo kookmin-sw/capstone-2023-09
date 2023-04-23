@@ -1,5 +1,6 @@
 export const API_URL = {
   DEAL_BOARDS: '/api/deal-boards',
+  FREE_BOARDS: '/api/free-boards',
   FREE_BOARDS_WRITE: '/api/free-boards/write',
   INQUIRY_WRITE: '/api/inquiry-boards/write',
   INQUIRY: 'api/inquiry-boards',

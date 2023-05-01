@@ -5,26 +5,38 @@ import { useSetRecoilState } from 'recoil';
 import { headerTitleState } from '../../states/uiState';
 import { PATH } from '../../utils/paths';
 import './My.css';
-import user from './dummy.json';
-import { useGetUserInfomation } from '../../api/hooks/user';
+import axios from 'axios';
+import { getTokenFromCookie } from '../../utils/token';
 
 const MyPage = () => {
   const setHeaderTitle = useSetRecoilState(headerTitleState);
-  const { data } = useGetUserInfomation(2); //parameter: uid, 추후 uid 쿠키 토큰에 저장해둘 필요 있음
+
   useEffect(() => {
     setHeaderTitle('내정보');
 
-    console.log(data);
+    /*토큰으로 get*/
+    const userToken = getTokenFromCookie();
 
-    setImage(data?.data.image_url);
-    setNickName(data?.data.nick_name);
-    setTown('업데이트 예정');
-    setIntroduction('업데이트 예정');
-    setPersonalNum(data?.data.id);
-    setTimePay(data?.data.time_pay);
-  }, [data]);
+    console.log(userToken);
 
-  const userInfo = user.user1[0];
+    axios.defaults.headers.common['Authorization'] = `Bearer ${userToken}`;
+    axios
+      .get('/api/users/get')
+      .then((res) => {
+        console.log(res);
+
+        setImage(res.data.image_url);
+        setNickName(res.data.nick_name);
+        setTown(res.data.location);
+        setIntroduction(res.data.introduction);
+        setPersonalNum(res.data.id);
+        setTimePay(res.data.time_pay);
+      })
+      .catch((error) => {
+        console.error('Error sending GET request:', error);
+      });
+  }, []);
+
   const [image, setImage]: any = useState();
   const [nickName, setNickName]: any = useState();
   const [town, setTown]: any = useState();
@@ -32,7 +44,7 @@ const MyPage = () => {
   const [personalNum, setPersonalNum]: any = useState();
   const [timePay, setTimePay]: any = useState();
 
-  const navigate = useNavigate(); //history
+  const navigate = useNavigate();
 
   const handlePageMove = useCallback(
     (path: string) => {
@@ -98,7 +110,7 @@ const MyPage = () => {
             <div className="MyPageMoveBox">
               <button
                 className="MyPageText"
-                onClick={() => handlePageMove(PATH.ACTIVITY)}
+                onClick={() => handlePageMove(PATH.MY_ACTIVITY_RECORD)}
               >
                 활동 기록
               </button>
@@ -119,15 +131,6 @@ const MyPage = () => {
                 onClick={() => handlePageMove(PATH.INQUIRE)}
               >
                 문의하기
-              </button>
-            </div>
-
-            <div className="MyPageMoveBox">
-              <button
-                className="MyPageText"
-                onClick={() => handlePageMove(PATH.BOOKMARK)}
-              >
-                즐겨찾기
               </button>
             </div>
           </div>

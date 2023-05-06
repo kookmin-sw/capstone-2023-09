@@ -17,10 +17,10 @@ public class TimeTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long timeTableId;
+    private Long id;
 
-    @OneToMany(mappedBy = "timeTable", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "timeTable", cascade = CascadeType.REMOVE)
     private List<TimeStamp> timeStamps = new ArrayList<>();
-    private String startTime;
-    private String endTime;
+    private String monday;
+    private String sunday;
 }

@@ -18,17 +18,18 @@ public class TimeTableController
 {
     private final TimeStampService timeStampService;
 
-    @GetMapping("/{id}")
-    public List<TimeStampDTO> getTimeStamp(@RequestParam @PathVariable("id") Long id,
-                                                          @RequestParam String monday,
-                                                          @RequestParam String sunday)
+    @GetMapping("")
+    public List<TimeStampDTO> getTimeStamp(@RequestParam Long id,
+                                           @RequestParam String monday,
+                                           @RequestParam String sunday)
     {
-        return timeStampService.findAllByWeekAndTimeTableId(id, monday, sunday);
+        return timeStampService.getTimeTable(id, monday, sunday);
     }
 
-    @PostMapping("/help/add")
-    public ResponseEntity<TimeStampDTO> addTimeStamp(@RequestBody TimeStampDTO timeStampDTO) {
-        return new ResponseEntity<>(timeStampService.addTimeStamp(timeStampDTO), HttpStatus.CREATED);
+    @PostMapping("/help/add/{id}")
+    public ResponseEntity<TimeStampDTO> addTimeStamp(@RequestBody @PathVariable("id") Long id,
+                                                     @RequestBody TimeStampDTO timeStampDTO) {
+        return new ResponseEntity<>(timeStampService.addTimeStamp(id, timeStampDTO), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/help/delete/{id}")

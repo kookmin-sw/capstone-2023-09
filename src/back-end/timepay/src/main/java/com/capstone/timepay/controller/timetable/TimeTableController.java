@@ -32,6 +32,13 @@ public class TimeTableController
         return new ResponseEntity<>(timeStampService.addTimeStamp(id, timeStampDTO), HttpStatus.CREATED);
     }
 
+    @GetMapping("/{id}/{timeStampId}")
+    public TimeStampDTO getOneTimeStamp(@PathVariable("id") Long id,
+                                        @PathVariable("timeStampId") Long timeStampId)
+    {
+        return timeStampService.getOneTimeStamp(id, timeStampId);
+    }
+
     @DeleteMapping("/help/delete/{id}")
     public void deleteTimeStamp(@PathVariable("id") Long id) {
         timeStampService.deleteTimeStamp(id);

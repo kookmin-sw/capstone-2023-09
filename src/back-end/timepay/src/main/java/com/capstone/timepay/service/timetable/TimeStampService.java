@@ -38,6 +38,30 @@ public class TimeStampService {
         return timeStampList.stream().map(TimeStampDTO::toTimeStampDTO).collect(Collectors.toList());
     }
 
+    public TimeStampDTO getOneTimeStamp(Long id, Long timeStampId)
+    {
+        List<TimeStamp> timeStamps = timeTableRepository.findById(id).get().getTimeStamps();
+        TimeStamp getOne = new TimeStamp();
+        if (timeStamps.isEmpty())
+        {
+            throw new IllegalArgumentException("타임스탬프가 존재하지 않습니다");
+        }
+
+        for (TimeStamp timeStamp : timeStamps)
+        {
+            if (timeStamp.getId() == timeStampId) {
+                getOne = timeStamp;
+                break;
+            }
+        }
+
+        if (getOne == null)
+        {
+            throw new IllegalArgumentException("타임스탬프가 존재하지 않습니다");
+        }
+        return TimeStampDTO.toTimeStampDTO(getOne);
+    }
+
     public TimeStampDTO addTimeStamp(Long id, TimeStampDTO timeStampDTO) {
         TimeTable timeTable = timeTableRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Invalid timeTableId"));

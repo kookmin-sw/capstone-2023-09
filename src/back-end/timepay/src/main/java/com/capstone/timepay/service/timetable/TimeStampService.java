@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,5 +78,22 @@ public class TimeStampService {
 
     public void deleteTimeStamp(Long id) {
         timeStampRepository.deleteById(id);
+    }
+
+    public List<TimeStampDTO> getHelper(String monday, String sunday)
+    {
+        List<TimeStamp> timeStampList = timeStampRepository.findAllByWeek(monday, sunday);
+        int size = timeStampList.size();
+
+
+        // 랜덤한 값 넣기
+        List<TimeStampDTO> randomTimeStamp = new ArrayList<>();
+        for (int i = 0; i < 3; i++)
+        {
+            Long num = new Random().nextLong(size);
+            TimeStamp tmpTimeStamp = timeStampRepository.findById(num).orElse(null);
+            randomTimeStamp.add(TimeStampDTO.toTimeStampDTO(tmpTimeStamp));
+        }
+        return randomTimeStamp;
     }
 }

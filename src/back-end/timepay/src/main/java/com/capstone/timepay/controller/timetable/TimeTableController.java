@@ -57,4 +57,18 @@ public class TimeTableController
     {
         return timeStampService.getHelper(monday, sunday);
     }
+
+    @ApiOperation(value = "도움주기 상세페이지")
+    @GetMapping("/helper/{timeStampId")
+    public TimeStampDTO getHelperStamp(@PathVariable("timeStampId") Long timeStampId)
+    {
+        return timeStampService.getHelperStamp(timeStampId);
+    }
+
+    @ApiOperation(value = "지원하기 버튼")
+    @PutMapping("/helper/{timeStampId}/apply")
+    public ResponseEntity applyTimeStamp(@PathVariable("timeStampId") Long timeStampId)
+    {
+        return new ResponseEntity(timeStampService.setApply(timeStampId));
+    }
 }

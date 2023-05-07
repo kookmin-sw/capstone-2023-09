@@ -6,6 +6,8 @@ import com.capstone.timepay.domain.timetable.TimeTable;
 import com.capstone.timepay.domain.timetable.TimeTableRepository;
 import com.capstone.timepay.service.timetable.dto.TimeStampDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -95,5 +97,22 @@ public class TimeStampService {
             randomTimeStamp.add(TimeStampDTO.toTimeStampDTO(tmpTimeStamp));
         }
         return randomTimeStamp;
+    }
+
+    public TimeStampDTO getHelperStamp(Long timeStampId)
+    {
+        TimeStamp timeStamp = timeStampRepository.findById(timeStampId).orElseThrow(() -> {
+            return new IllegalArgumentException("타임스탬프가 존재하지 않습니다");
+        });
+        return TimeStampDTO.toTimeStampDTO(timeStamp);
+    }
+
+    public HttpStatus setApply(Long timeStampId)
+    {
+        TimeStamp timeStamp = timeStampRepository.findById(timeStampId).orElseThrow(() -> {
+            return new IllegalArgumentException("타임스탬프가 존재하지 않습니다");
+        });
+        timeStamp.setAdopted(true);
+        return HttpStatus.OK;
     }
 }

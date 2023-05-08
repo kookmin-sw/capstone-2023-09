@@ -28,7 +28,6 @@ import java.util.Map;
 public class FreeBoardController {
 
     private final FreeBoardService freeBoardService;
-
     private final ReportService reportService;
 
     private final FreeRegisterService freeRegisterService;
@@ -138,4 +137,3 @@ public class FreeBoardController {
         return ResponseEntity.ok(reportService.reportBoard(authentication, boardId, requestDTO,"일반신고"));
     }
 }
-

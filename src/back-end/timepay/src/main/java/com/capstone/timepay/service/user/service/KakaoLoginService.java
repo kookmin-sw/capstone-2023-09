@@ -43,9 +43,9 @@ public class KakaoLoginService {
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=79587b639a3a9ca1c9433fa63bc55863");
             //sb.append("&redirect_uri=http://localhost:8080/oauth/redirect/kakao"); // 서버 로컬 테스트용
+
             //sb.append("&redirect_uri=http://localhost:3000/oauth/redirect/kakao"); // 프론트 로컬 테스트용
             sb.append("&redirect_uri=http://13.125.249.51/oauth/redirect/kakao");
-
 
             sb.append("&code=" + code);
             bw.write(sb.toString());

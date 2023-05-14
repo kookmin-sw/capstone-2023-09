@@ -25,6 +25,25 @@ const QnaDetailPage = () => {
     navigate(-1);
   }, [navigate]);
 
+  // 문의 삭제 api 우선 이렇게 만들었어요,, mutation 써서 하는 법 몰라서..ㅠ
+  const pathname = window.location.pathname;
+  const real_pathname = pathname.substring(9);
+  const url = 'http://13.125.119.30/api/inquiry-boards/' + real_pathname;
+  console.log(url);
+
+  const handleClickDelete = async () => {
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        navigate(-1);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <div css={cssMainHeaderStyle}>
@@ -33,7 +52,9 @@ const QnaDetailPage = () => {
       </div>
       <div css={cssQnaDetailStyle}>
         <div css={cssQnaDeleteStyle}>
-          <Button css={cssDeleteBtnStyle}>삭제</Button>
+          <Button css={cssDeleteBtnStyle} onClick={handleClickDelete}>
+            삭제
+          </Button>
         </div>
         <div css={cssQnaDetail2Style}>
           <h1 style={{ color }}>{status} </h1>

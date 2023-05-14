@@ -12,17 +12,17 @@ const QnaList = ({ qna }: QnaListProps) => {
   const navigate = useNavigate();
 
   const color =
-    qna?.status === '답변완료'
+    qna?.state === '답변완료'
       ? `${COMMON_COLOR.MAIN3}`
       : `${COMMON_COLOR.FONT3}`;
 
   const handlePageChange = () => {
-    navigate(`/inquire/${qna?.qnaId}`, {
+    navigate(`/inquire/${qna?.inquiryId}`, {
       state: {
         title: qna?.title,
         content: qna?.content,
         createdAt: qna?.createdAt,
-        status: qna?.status,
+        status: qna?.state,
         category: qna?.category,
       },
     });
@@ -32,7 +32,7 @@ const QnaList = ({ qna }: QnaListProps) => {
     <>
       <List.Item css={cssQnaListStyle} onClick={handlePageChange}>
         <div className="qnaStatus" style={{ color }}>
-          {qna?.status}
+          {qna?.state}
         </div>
         <div className="qnaCategory">{qna?.category}</div>
         <div className="qnaTitle">{qna?.title}</div>

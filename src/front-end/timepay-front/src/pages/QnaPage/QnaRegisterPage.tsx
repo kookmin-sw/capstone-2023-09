@@ -25,9 +25,10 @@ const QnaRegisterPage = () => {
   const queryclient = useQueryClient();
   const useCreateInquiryMutation = useCreateInquiry();
 
-  const subject = 'subject';
+  const state = '답변대기';
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const categories = ['버그', '건의사항', '요청사항'];
 
@@ -35,9 +36,11 @@ const QnaRegisterPage = () => {
     setSelectedCategory((prevCategory) =>
       prevCategory === category ? '' : category,
     );
+    setCategory(category);
     console.log(category);
     console.log(typeof category);
   };
+  console.log('..', category);
 
   // 사진
   const [images, setImages] = useState<File[]>([]);
@@ -101,7 +104,7 @@ const QnaRegisterPage = () => {
 
   const handleSubmit = () => {
     useCreateInquiryMutation.mutateAsync(
-      { title, content, subject },
+      { title, content, state, category },
       {
         onSuccess: (data) => {
           console.log('success');
@@ -127,7 +130,7 @@ const QnaRegisterPage = () => {
           <BackArrow onClick={handleClickBack} />
           <span>문의작성</span>
         </Header>
-        <Content style={{ paddingTop: 60 }}>
+        <Content style={{ paddingTop: 90 }}>
           <input
             css={cssPostTitleInputStyle}
             placeholder="제목을 입력하세요"

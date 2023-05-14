@@ -4,7 +4,7 @@ export const API_URL = {
   FREE_BOARDS_WRITE: '/api/free-boards/write',
   DEAL_BOARDS_WRITE: '/api/deal-boards/write/help', // 도움받기
   INQUIRY_WRITE: '/api/inquiry-boards/write',
-  INQUIRY: 'api/inquiry-boards',
+  INQUIRY: 'api/inquiry-boards/my-page',
   NOTIFICATIONS: 'api/notifications',
   ORGANIZATIONS_REGISTER: '/api/organizations/register',
   ORGANIZATIONS_LOGIN: '/api/organizations/login',

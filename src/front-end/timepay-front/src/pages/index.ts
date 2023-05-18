@@ -20,6 +20,8 @@ import AgencySignInPage from './AgencySignInPage';
 import AgencySignUpPage from './AgencySignUpPage';
 import MyVolunteerPage from './MyVolunteerPage';
 import VolunteerCertificationPaymentPage from './VolunteerCertificationPaymentPage';
+import RegisterEventPage from './RegisterPage/RegisterEventPage';
+import AgencyEditPage from './AgencyEditPage';
 
 const PageRoutes = {
   LoginPage,
@@ -33,6 +35,7 @@ const PageRoutes = {
   RegisterFreePage,
   RegisterRequestPage,
   RegisterServePage,
+  RegisterEventPage,
   PushNotificationPage,
   QnaListPage,
   QnaRegisterPage,
@@ -42,6 +45,7 @@ const PageRoutes = {
   ActivityRecordPage,
   AgencySignInPage,
   AgencySignUpPage,
+  AgencyEditPage,
   MyVolunteerPage,
   VolunteerCertificationPaymentPage,
 };

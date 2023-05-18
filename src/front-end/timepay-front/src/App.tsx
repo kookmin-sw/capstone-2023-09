@@ -6,6 +6,7 @@ import PageRoutes from './pages';
 import { PATH } from './utils/paths';
 import { RecoilRoot } from 'recoil';
 import CategorySelectPage from './pages/CategorySelectPage/CategorySelectPage';
+import AgencyEditPage from './pages/AgencyEditPage';
 function App() {
   return (
     <RecoilRoot>
@@ -37,6 +38,10 @@ function App() {
             <Route
               path={PATH.Register_HS}
               element={<PageRoutes.RegisterServePage />}
+            />
+            <Route
+              path={PATH.Register_EVENT}
+              element={<PageRoutes.RegisterEventPage />}
             />
             <Route
               path={PATH.Register_F}
@@ -75,10 +80,6 @@ function App() {
               element={<PageRoutes.MyVolunteerPage />}
             />
             <Route
-              path={PATH.MY_VOLUNTEER}
-              element={<PageRoutes.MyVolunteerPage />}
-            />
-            <Route
               path={`${PATH.PAYMENT_CERTIFICATION}/:boardId`}
               element={<PageRoutes.VolunteerCertificationPaymentPage />}
             />
@@ -86,6 +87,7 @@ function App() {
               path={PATH.CATEGORY_SELECT}
               element={<CategorySelectPage />}
             />
+            <Route path={PATH.AGENCY_EDIT} element={<AgencyEditPage />} />
           </Route>
         </Routes>
       </ConfigProvider>

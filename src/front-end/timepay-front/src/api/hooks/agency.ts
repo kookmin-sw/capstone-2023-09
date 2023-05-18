@@ -15,8 +15,7 @@ export const usePostAgencyLogin = () => {
 export const useAgencyLogout = () => {
   return useMutation<AxiosResponse<any>, AxiosError, any>({
     mutationKey: 'useAgencyLogout',
-    mutationFn: (data) =>
-      apiRequest.post(API_URL.ORGANIZATIONS_LOGOUT, { ...data }),
+    mutationFn: () => apiRequest.post(API_URL.ORGANIZATIONS_LOGOUT),
   });
 };
 
@@ -25,6 +24,14 @@ export const usePostAgencyRegister = () => {
     mutationKey: 'usePostAgencyRegister',
     mutationFn: (data) =>
       apiRequest.postFormData(API_URL.ORGANIZATIONS_REGISTER, data),
+  });
+};
+
+export const usePatchAgencyUpdate = () => {
+  return useMutation<AxiosResponse<any>, AxiosError, FormData>({
+    mutationKey: 'usePatchAgencyUpdate',
+    mutationFn: (data) =>
+      apiRequest.patchFormData(API_URL.ORGANIZATIONS_EDIT, data),
   });
 };
 
